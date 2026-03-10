@@ -18,7 +18,7 @@ export default function RootLayout({
   	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="es" suppressHydrationWarning className="h-full bg-mirage-50">
+		<html lang="es" suppressHydrationWarning className="h-full">
 			<body
 				className={`${spaceGroptesk.className} h-full bg-mirage-50`}
 			>

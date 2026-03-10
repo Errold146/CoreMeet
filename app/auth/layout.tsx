@@ -8,8 +8,8 @@ export default function AuthLayout({
 }>) {
     return (
         <>
-            <div className="flex justify-center pt-10">
-                <Link href="/" className="w-48">
+            <div className="flex justify-center items-center pt-5">
+                <Link href="/" className="w-32 -mb-20">
                     <Logo />
                 </Link>
             </div>

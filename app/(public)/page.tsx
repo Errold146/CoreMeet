@@ -1,8 +1,9 @@
 import { Metadata } from "next";
 import { Hero } from "@/components/ui";
+import { generatePageTitle } from "@/src/shared/utils";
 
 export const metadata: Metadata = {
-    title: "CoreMeet - Inicio",
+    title: generatePageTitle("Inicio"),
     description: "Página principal de CoreMeet"
 }
 
