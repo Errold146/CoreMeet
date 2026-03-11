@@ -1,3 +1,0 @@
-CoreMeet
-CoreCommunities
-CoreConnects
