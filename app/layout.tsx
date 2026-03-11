@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "sonner";
 
 const spaceGroptesk = Space_Grotesk({
 	variable: "--font-geist-sans",
@@ -23,6 +24,7 @@ export default function RootLayout({
 				className={`${spaceGroptesk.className} h-full bg-mirage-50`}
 			>
 				{children}
+                <Toaster richColors position="top-right" />
 			</body>
 		</html>
 	);

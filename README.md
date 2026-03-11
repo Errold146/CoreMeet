@@ -44,24 +44,66 @@ core-meet/
 │   ├── (public)/                 # Grupo de rutas públicas
 │   │   ├── layout.tsx           # Layout con Header
 │   │   └── page.tsx             # Página de inicio con Hero
+│   ├── api/
+│   │   └── auth/
+│   │       └── [...all]/
+│   │           └── route.ts     # API routes de Better Auth
 │   ├── auth/                     # Autenticación
 │   │   ├── layout.tsx           # Layout de auth con Logo
 │   │   ├── login/               # Página de inicio de sesión
-│   │   └── register/            # Página de registro
+│   │   ├── register/            # Página de registro
+│   │   └── forgot-password/     # Recuperación de contraseña
 │   ├── globals.css              # Estilos globales
 │   └── layout.tsx               # Root layout
 ├── src/
+│   ├── db/                       # Base de datos
+│   │   ├── index.ts             # Configuración de Drizzle
+│   │   └── schema/
+│   │       ├── auth-schema.ts   # Schema de autenticación
+│   │       ├── community.ts     # Schema de comunidades
+│   │       └── index.ts
+│   ├── features/                 # Features del proyecto
+│   │   └── auth/                # Feature de autenticación
+│   │       ├── actions/
+│   │       │   └── auth-actions.ts  # Server Actions
+│   │       ├── components/
+│   │       │   ├── LoginForm.tsx
+│   │       │   ├── RegisterForm.tsx
+│   │       │   └── ForgotPasswordForm.tsx
+│   │       ├── schemas/
+│   │       │   └── authSchema.ts    # Validación con Zod
+│   │       ├── services/
+│   │       │   ├── AuthRepository.ts  # Capa de datos
+│   │       │   └── AuthService.ts     # Lógica de negocio
+│   │       └── index.ts
+│   ├── lib/
+│   │   └── auth.ts              # Configuración de Better Auth
 │   └── shared/
-│       └── components/
-│           └── ui/              # Componentes de interfaz
-│               ├── GuestNavigation.tsx  # Navegación para invitados
-│               ├── Header.tsx           # Header principal
-│               ├── Hero.tsx             # Sección hero
-│               ├── Logo.tsx             # Componente de logo
-│               └── index.ts             # Barrel export
+│       ├── components/
+│       │   ├── forms/           # Componentes de formularios
+│       │   │   ├── Form.tsx
+│       │   │   ├── FormInput.tsx
+│       │   │   ├── FormLabel.tsx
+│       │   │   ├── FormError.tsx
+│       │   │   ├── FormSubmit.tsx
+│       │   │   └── index.ts
+│       │   ├── typography/      # Componentes de tipografía
+│       │   │   ├── Heading.tsx
+│       │   │   └── index.ts
+│       │   └── ui/              # Componentes de interfaz
+│       │       ├── GuestNavigation.tsx
+│       │       ├── Header.tsx
+│       │       ├── Hero.tsx
+│       │       ├── Logo.tsx
+│       │       └── index.ts
+│       └── utils/               # Utilidades
+│           ├── metadata.ts      # Helpers de metadata
+│           └── index.ts
+├── drizzle/                      # Migraciones de base de datos
 ├── public/
 │   ├── logo-core.png            # Logo de la aplicación
 │   └── Meetis/                   # Assets adicionales
+├── drizzle.config.ts            # Configuración de Drizzle
 ├── next.config.ts               # Configuración de Next.js
 ├── tsconfig.json                # Configuración de TypeScript
 ├── tailwind.config.ts           # Configuración de Tailwind
@@ -77,13 +119,66 @@ core-meet/
 - **Logo**: Componente de imagen del logo
 - **GuestNavigation**: Navegación con botones de login/registro elegantes
 
+### Form Components
+
+- **Form**: Contenedor de formularios con manejo de Server Actions
+- **FormInput**: Input reutilizable con estilos consistentes
+- **FormLabel**: Labels accesibles para formularios
+- **FormError**: Componente para mostrar errores de validación
+- **FormSubmit**: Botón de submit con estados de loading
+
+### Typography Components
+
+- **Heading**: Componente de encabezados con variantes (h1, h2, h3)
+
+### Auth Components
+
+- **LoginForm**: Formulario de inicio de sesión
+- **RegisterForm**: Formulario de registro de usuarios
+- **ForgotPasswordForm**: Formulario de recuperación de contraseña
+
 ## 🛣️ Rutas Implementadas
 
 | Ruta | Descripción | Estado |
 |------|-------------|--------|
 | `/` | Página de inicio | ✅ Implementado |
-| `/auth/login` | Inicio de sesión | 🚧 En desarrollo |
-| `/auth/register` | Registro de usuario | 🚧 En desarrollo |
+| `/auth/login` | Inicio de sesión | ✅ Implementado |
+| `/auth/register` | Registro de usuario | ✅ Implementado |
+| `/auth/forgot-password` | Recuperación de contraseña | ✅ Implementado |
+| `/api/auth/[...all]` | API routes de Better Auth | ✅ Implementado |
+
+## 🏛️ Arquitectura del Proyecto
+
+### Repository Pattern + Service Layer
+
+El proyecto utiliza una arquitectura en capas para mejor organización y mantenibilidad:
+
+```
+┌─────────────────────────────────────┐
+│      Actions (Server Actions)      │  ← Capa de presentación
+├─────────────────────────────────────┤
+│       Services (Lógica negocio)     │  ← Validaciones y reglas
+├─────────────────────────────────────┤
+│    Repositories (Capa de datos)    │  ← Acceso a base de datos
+├─────────────────────────────────────┤
+│         Database (Drizzle)          │  ← ORM y esquemas
+└─────────────────────────────────────┘
+```
+
+**Ventajas:**
+- ✅ Separación de responsabilidades clara
+- ✅ Código más testeable y mantenible
+- ✅ Lógica de negocio desacoplada de la UI
+- ✅ Inyección de dependencias para flexibilidad
+
+### Feature-Based Structure
+
+Cada feature (auth, comunidades, etc.) contiene:
+- **actions/**: Server Actions de Next.js
+- **components/**: Componentes React específicos
+- **schemas/**: Validaciones con Zod
+- **services/**: Lógica de negocio
+- **repositories/**: Capa de acceso a datos (opcional)
 
 ## 🎨 Sistema de Diseño
 
@@ -151,12 +246,14 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver el 
 
 ## 🏗️ Próximas Funcionalidades
 
-- [ ] Sistema de autenticación con Better Auth
-- [ ] Integración de Drizzle ORM
+- [x] Sistema de autenticación con Better Auth
+- [x] Integración de Drizzle ORM
+- [x] Validación de formularios con Zod
+- [ ] Verificación de email
+- [ ] Recuperación de contraseña funcional
 - [ ] Gestión de uploads con UploadThing
 - [ ] Chat en tiempo real con Pusher
 - [ ] Sistema de caché con Redis
-- [ ] Validación de formularios con Zod
 - [ ] Dashboard de usuario
 - [ ] CoreConnect (Encuentros)
 - [ ] CoreCommunity (Comunidades)
@@ -169,6 +266,11 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver el 
 - Export named para componentes
 - Barrel exports en archivos `index.ts`
 - Metadata por página para SEO
+- Repository Pattern para acceso a datos
+- Service Layer para lógica de negocio
+- Validación con Zod en todos los formularios
+- Server Actions para mutaciones de datos
+- TypeScript estricto habilitado
 
 ## 📄 Licencia
 
