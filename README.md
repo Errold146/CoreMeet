@@ -1,14 +1,16 @@
 # CoreMeet 🤝
 
 ![Next.js](https://img.shields.io/badge/Next.js-16.1.6-black?style=for-the-badge&logo=next.js&logoColor=white)
+![React](https://img.shields.io/badge/React-19.2.3-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![Better Auth](https://img.shields.io/badge/Better_Auth-Authentication-orange?style=for-the-badge&logo=auth0&logoColor=white)
-![Drizzle ORM](https://img.shields.io/badge/Drizzle_ORM-Database-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black)
+![Better Auth](https://img.shields.io/badge/Better_Auth-1.5.4-orange?style=for-the-badge&logo=auth0&logoColor=white)
+![Drizzle ORM](https://img.shields.io/badge/Drizzle_ORM-0.45.1-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![UploadThing](https://img.shields.io/badge/UploadThing-File_Upload-FF6B6B?style=for-the-badge&logo=cloudinary&logoColor=white)
-![Pusher](https://img.shields.io/badge/Pusher-Real--Time-300D4F?style=for-the-badge&logo=pusher&logoColor=white)
-![Zod](https://img.shields.io/badge/Zod-Validation-3E67B1?style=for-the-badge&logo=zod&logoColor=white)
-![Redis](https://img.shields.io/badge/Redis-Cache-DC382D?style=for-the-badge&logo=redis&logoColor=white)
+![Headless UI](https://img.shields.io/badge/Headless_UI-2.2.9-66E3FF?style=for-the-badge&logo=headlessui&logoColor=black)
+![React Hook Form](https://img.shields.io/badge/React_Hook_Form-7.71.2-EC5990?style=for-the-badge&logo=reacthookform&logoColor=white)
+![Zod](https://img.shields.io/badge/Zod-4.3.6-3E67B1?style=for-the-badge&logo=zod&logoColor=white)
+![Nodemailer](https://img.shields.io/badge/Nodemailer-8.0.2-339933?style=for-the-badge&logo=nodemailer&logoColor=white)
 
 ## 📋 Descripción
 
@@ -27,14 +29,18 @@
 | Tecnología | Uso |
 |------------|-----|
 | **Next.js 16** | Framework React con App Router y Server Components |
+| **React 19** | Biblioteca de UI con Server Components |
 | **TypeScript** | Type-safe development |
-| **Better Auth** | Sistema de autenticación moderno |
-| **Drizzle ORM** | ORM TypeScript-first para base de datos |
+| **Better Auth 1.5.4** | Sistema de autenticación moderno y completo |
+| **Drizzle ORM** | ORM TypeScript-first para PostgreSQL |
+| **PostgreSQL** | Base de datos relacional |
 | **TailwindCSS 4** | Framework CSS utility-first |
-| **UploadThing** | Gestión de archivos y uploads |
-| **Pusher** | Comunicación en tiempo real |
-| **Zod** | Validación de esquemas TypeScript |
-| **Redis** | Caché y gestión de sesiones |
+| **Headless UI** | Componentes UI accesibles sin estilos |
+| **React Hook Form** | Gestión de formularios con validación |
+| **Zod 4** | Validación de esquemas TypeScript |
+| **Heroicons** | Librería de iconos SVG |
+| **Nodemailer** | Envío de emails transaccionales |
+| **Sonner** | Sistema de notificaciones toast |
 
 ## 📁 Estructura del Proyecto
 
@@ -53,6 +59,9 @@ core-meet/
 │   │   ├── login/               # Página de inicio de sesión
 │   │   ├── register/            # Página de registro
 │   │   └── forgot-password/     # Recuperación de contraseña
+│   ├── dashboard/                # Panel administrativo
+│   │   ├── layout.tsx           # Layout con navegación
+│   │   └── page.tsx             # Dashboard principal
 │   ├── globals.css              # Estilos globales
 │   └── layout.tsx               # Root layout
 ├── src/
@@ -80,6 +89,13 @@ core-meet/
 │   │   └── auth.ts              # Configuración de Better Auth
 │   └── shared/
 │       ├── components/
+│       │   ├── dashboard/       # Componentes del dashboard
+│       │   │   ├── DashboardNavigation.tsx
+│       │   │   ├── DashboardPanel.tsx
+│       │   │   ├── MobileSidebar.tsx
+│       │   │   ├── NotificationsPanel.tsx
+│       │   │   ├── UserMenu.tsx
+│       │   │   └── index.ts
 │       │   ├── forms/           # Componentes de formularios
 │       │   │   ├── Form.tsx
 │       │   │   ├── FormInput.tsx
@@ -133,9 +149,17 @@ core-meet/
 
 ### Auth Components
 
-- **LoginForm**: Formulario de inicio de sesión
-- **RegisterForm**: Formulario de registro de usuarios
+- **LoginForm**: Formulario de inicio de sesión con validación
+- **RegisterForm**: Formulario de registro de usuarios con validación
 - **ForgotPasswordForm**: Formulario de recuperación de contraseña
+
+### Dashboard Components
+
+- **DashboardNavigation**: Barra de navegación lateral del dashboard
+- **DashboardPanel**: Panel contenedor principal del dashboard
+- **MobileSidebar**: Navegación móvil responsive
+- **NotificationsPanel**: Panel de notificaciones de usuario
+- **UserMenu**: Menú desplegable de usuario con opciones de perfil y cierre de sesión
 
 ## 🛣️ Rutas Implementadas
 
@@ -145,6 +169,7 @@ core-meet/
 | `/auth/login` | Inicio de sesión | ✅ Implementado |
 | `/auth/register` | Registro de usuario | ✅ Implementado |
 | `/auth/forgot-password` | Recuperación de contraseña | ✅ Implementado |
+| `/dashboard` | Panel administrativo de usuario | ✅ Implementado |
 | `/api/auth/[...all]` | API routes de Better Auth | ✅ Implementado |
 
 ## 🏛️ Arquitectura del Proyecto
@@ -247,14 +272,20 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver el 
 ## 🏗️ Próximas Funcionalidades
 
 - [x] Sistema de autenticación con Better Auth
-- [x] Integración de Drizzle ORM
+- [x] Integración de Drizzle ORM con PostgreSQL
 - [x] Validación de formularios con Zod
-- [ ] Verificación de email
-- [ ] Recuperación de contraseña funcional
+- [x] Formulario de registro funcional
+- [x] Formulario de login funcional
+- [x] Recuperación de contraseña (UI implementada)
+- [x] Dashboard de usuario con navegación
+- [x] Sistema de notificaciones con Sonner
+- [x] Menú de usuario con opciones de perfil
+- [x] Integración de email con Nodemailer
+- [ ] Verificación de email funcional
+- [ ] Sistema de perfiles de usuario
 - [ ] Gestión de uploads con UploadThing
 - [ ] Chat en tiempo real con Pusher
 - [ ] Sistema de caché con Redis
-- [ ] Dashboard de usuario
 - [ ] CoreConnect (Encuentros)
 - [ ] CoreCommunity (Comunidades)
 - [ ] Sistema de reuniones

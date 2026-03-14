@@ -11,7 +11,8 @@ import { Form, FormError, FormInput, FormLabel, FormSubmit } from "@/components/
 export function RegisterForm() {
 
     const { register, handleSubmit, formState: { errors }, reset } = useForm({
-        resolver: zodResolver(SignUpSchema)
+        resolver: zodResolver(SignUpSchema),
+        mode: 'all'
     })
 
     const onSubmit = async (data: SignUpInput) => {

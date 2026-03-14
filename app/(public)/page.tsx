@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+
 import { Hero } from "@/components/ui";
 import { generatePageTitle } from "@/src/shared/utils";
 
@@ -7,7 +8,8 @@ export const metadata: Metadata = {
     description: "Página principal de CoreMeet"
 }
 
-export default function Home() {
+export default async function Home() {
+
     return (
         <>
 
