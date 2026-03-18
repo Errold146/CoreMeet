@@ -169,8 +169,15 @@ core-meet/
 | `/auth/login` | Inicio de sesión | ✅ Implementado |
 | `/auth/register` | Registro de usuario | ✅ Implementado |
 | `/auth/forgot-password` | Recuperación de contraseña | ✅ Implementado |
+| `/auth/reset-password` | Restablecer contraseña | ✅ Implementado |
 | `/dashboard` | Panel administrativo de usuario | ✅ Implementado |
+| `/dashboard/communities` | Gestión de comunidades | ✅ Implementado |
+| `/dashboard/communities/create` | Crear nueva comunidad | ✅ Implementado |
+| `/dashboard/communities/joined` | Comunidades unidas | ✅ Implementado |
+| `/dashboard/communities/[id]/edit` | Editar comunidad | ✅ Implementado |
 | `/api/auth/[...all]` | API routes de Better Auth | ✅ Implementado |
+| `/api/uploadthing` | API de UploadThing para archivos | ✅ Implementado |
+| `/api/uploadthing/delete` | Eliminar archivos de UploadThing | ✅ Implementado |
 
 ## 🏛️ Arquitectura del Proyecto
 
@@ -237,20 +244,163 @@ git clone https://github.com/Errold146/CoreMeet.git
 npm install
 
 # Configurar variables de entorno
-cp .env.example .env.local
+# Crear un archivo .env.local en la raíz del proyecto con las siguientes variables:
+```
+
+### Variables de Entorno
+
+Crea un archivo `.env.local` en la raíz del proyecto con las siguientes variables:
+
+```env
+# Base de datos PostgreSQL
+DATABASE_URL="postgresql://usuario:password@localhost:5432/coremeet"
+
+# Better Auth
+BETTER_AUTH_SECRET="tu-secret-key-muy-seguro-aqui"
+BETTER_AUTH_URL="http://localhost:3000"
+
+# Nodemailer (SMTP)
+
+## 🗄️ Base de Datos
+
+### Esquema de Tablas
+
+El proyecto utiliza Drizzle ORM con PostgreSQL. Las principales tablas son:
+
+#### **Users** (Better Auth)
+- Gestión de usuarios con autenticación
+- Verificación de email
+- Gestión de sesiones
+
+#### **Communities**
+- `id` (UUID): Identificador único
+- `name` (VARCHAR): Nombre de la comunidad
+- `description` (TEXT): Descripción de la comunidad
+- `imageUrl` (VARCHAR): URL de la imagen de la comunidad
+- `createdAt` (TIMESTAMP): Fecha de creación
+- `createdBy` (TEXT): ID del usuario creador
+
+### Migraciones
+
+Las migraciones se encuentran en la carpeta `drizzle/` y se gestionan con Drizzle Kit:
+
+```bash
+# Generar nueva migración
+npx drizzle-kit generate
+
+# Aplicar migraciones
+npx drizzle-kit push
+
+# Ver estado de migraciones
+npx drizzle-kit status
+```
+EMAIL_HOST="smtp.gmail.com"
+EMAIL_PORT="587"
+EMAIL_USER="tu-email@gmail.com"
+EMAIL_PASS="tu-app-password"
+
+# UploadThing (para subida de imágenes)
+UPLOADTHING_TOKEN="tu-token-de-uploadthing"
+```
+
+### Ejecutar Migraciones
+
+```bash
+# Generar migraciones
+npm run drizzle-kit generate
+
+# Aplicar migraciones a la base de datos
+npm run drizzle-kit push
 
 # Iniciar servidor de desarrollo
 npm run dev
 ```
 
-### Scripts Disponibles
+### � Sistema de Emails
 
-```bash
-npm run dev      # Inicia el servidor de desarrollo
-npm run build    # Construye la aplicación para producción
-npm run start    # Inicia el servidor de producción
-npm run lint     # Ejecuta el linter
+El proyecto utiliza Nodemailer para el envío de emails transaccionales:
+
+### Emails Implementados
+
+- **Email de Verificación**: Enviado al registrarse o solicitar nueva verificación
+- **Email de Recuperación de Contraseña**: Enviado al solicitar restablecer contraseña
+
+### Configuración
+
+Los emails utilizan plantillas React con `@react-email/components` y se configuran en:
+- `src/emails/templates/`: Plantillas de emails
+- `src/emails/services/`: Servicios de envío de emails
+- `src/emails/config/`: Configuración de emails
+
+## 📤 Sistema de Uploads
+
+UploadThing está integrado para la gestión de archivos:
+
+### Características
+
+- Subida de imágenes para comunidades (max 1MB)
+- Middleware de autenticación en uploads
+- Eliminación automática de imágenes antiguas al actualizar
+- Integración con el componente `CommunityForm`
+
+### Configuración
+
+- `app/api/uploadthing/core.ts`: Configuración del router de archivos
+- `app/api/uploadthing/route.ts`: API routes de UploadThing
+- `app/api/uploadthing/delete/route.ts`: Eliminación de archivos
+
+## 🔐 Sistema de Autenticación
+
+Better Auth proporciona:
+
+- ✅ Autenticación con email y contraseña
+- ✅ Verificación de email requerida
+- ✅ Recuperación de contraseña con token
+- ✅ Sesiones persistentes con cookies
+- ✅ Protección de rutas del dashboard
+- ✅ Middleware de autenticación en API routes
+
+### Helpers de Autenticación
+
+```typescript
+// Cliente (React Components)
+import { authClient } from "@/lib/auth-client"
+
+// Servidor (Server Components/Actions)
+import { requireAuth } from "@/lib/auth-server"
 ```
+
+## 📝 Convenciones de Código
+
+- Componentes React en PascalCase
+- Uso de Server Components por defecto
+- Export named para componentes
+- Barrel exports en archivos `index.ts`
+- Metadata por página para SEO
+- Repository Pattern para acceso a datos
+- Server Actions para mutaciones
+- Validación con Zod en cliente y servidor
+- Tipos TypeScript estrictos
+
+## 🤝 Contribuir
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📄 Licencia
+
+Este proyecto es privado y está en desarrollo activo.
+
+## 👥 Autores
+
+- **Equipo CoreMeet** - Desarrollo inicial
+
+---
+
+**CoreMeet** - Conectando equipos, construyendo comunidades 🚀
 
 Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver el resultado.
 
@@ -269,26 +419,45 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver el 
 - Rutas tipadas habilitadas
 - Server Components por defecto
 
-## 🏗️ Próximas Funcionalidades
+## 🏗️ Funcionalidades Implementadas
+
+### ✅ Completadas
 
 - [x] Sistema de autenticación con Better Auth
 - [x] Integración de Drizzle ORM con PostgreSQL
 - [x] Validación de formularios con Zod
 - [x] Formulario de registro funcional
 - [x] Formulario de login funcional
-- [x] Recuperación de contraseña (UI implementada)
+- [x] Recuperación de contraseña con envío de email
+- [x] Restablecimiento de contraseña
 - [x] Dashboard de usuario con navegación
 - [x] Sistema de notificaciones con Sonner
 - [x] Menú de usuario con opciones de perfil
 - [x] Integración de email con Nodemailer
-- [ ] Verificación de email funcional
-- [ ] Sistema de perfiles de usuario
-- [ ] Gestión de uploads con UploadThing
+- [x] Sistema de emails transaccionales (verificación y recuperación)
+- [x] **CoreCommunity (Comunidades)** - CRUD completo
+  - [x] Crear comunidades con imagen
+  - [x] Editar comunidades existentes
+  - [x] Ver listado de comunidades propias
+  - [x] Ver comunidades a las que se unió
+  - [x] Políticas de acceso y validación
+- [x] Gestión de uploads con UploadThing
+  - [x] Subida de imágenes para comunidades
+  - [x] Eliminación de imágenes antiguas
+  - [x] Middleware de autenticación en uploads
+
+### 🚧 Próximas Funcionalidades
+
+- [ ] Verificación de email automática
+- [ ] Sistema de perfiles de usuario completo
+- [ ] Gestión de miembros en comunidades
+- [ ] Sistema de roles y permisos en comunidades
 - [ ] Chat en tiempo real con Pusher
 - [ ] Sistema de caché con Redis
-- [ ] CoreConnect (Encuentros)
-- [ ] CoreCommunity (Comunidades)
-- [ ] Sistema de reuniones
+- [ ] CoreConnect (Encuentros globales)
+- [ ] Sistema de reuniones departamentales
+- [ ] Notificaciones en tiempo real
+- [ ] Búsqueda y filtrado de comunidades
 
 ## 📝 Convenciones de Código
 

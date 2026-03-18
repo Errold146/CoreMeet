@@ -1,0 +1,36 @@
+import { eq } from "drizzle-orm";
+
+import { db } from "@/src/db";
+import { community } from "@/src/db/schema";
+import { InserCoreCommunity, SelectCoreCommunity } from "../types/community.types";
+
+export interface ICommunityRepository {
+    create(data: InserCoreCommunity): Promise<SelectCoreCommunity>
+    findByUser(userId: string, limit?: number): Promise<SelectCoreCommunity[]>
+    findById(communityId: string): Promise<SelectCoreCommunity | undefined>
+    update(communityId: string, data: Partial<InserCoreCommunity>): Promise<SelectCoreCommunity | undefined>
+}
+
+class CommunityRepository implements ICommunityRepository {
+    async create(data: InserCoreCommunity): Promise<SelectCoreCommunity> {
+        const [res] = await db.insert(community).values(data).returning()
+        return res
+    }
+
+    async findByUser(userId: string, limit = 10): Promise<SelectCoreCommunity[]> {
+        const communities = await db.select() .from(community).where(eq(community.createdBy, userId)).limit(limit)
+        return communities
+    }
+
+    async findById(communityId: string): Promise<SelectCoreCommunity | undefined> {
+        const [res] = await db.select().from(community).where(eq(community.id, communityId)).limit(1)
+        return res
+    }
+
+    async update(communityId: string, data: Partial<InserCoreCommunity>): Promise<SelectCoreCommunity | undefined> {
+        const [res] = await db.update(community).set(data).where(eq(community.id, communityId)).returning()
+        return res
+    }
+}
+
+export const communityRepository = new CommunityRepository()
