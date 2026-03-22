@@ -1,4 +1,4 @@
-import { Header } from "@/components/ui";
+import { Header } from "@/src/shared/components/ui/Header";
 
 export default function PublicLayout({children}: Readonly<{children: React.ReactNode}>) {
     return (

@@ -1,18 +1,22 @@
 import { User } from "better-auth";
+
+import { checkPassword } from "@/src/shared/utils/auth";
+import { membershipService } from "./MembershipService";
 import { CommunityInput } from "../schemas/communitySchema";
 import { CommunityPolicy } from "../policies/CommunityPolicy";
 import { MembershipPolicy } from "../policies/MembershipPolicy";
-import {
-    communityRepository,
-    ICommunityRepository,
-} from "./CommunityRepository";
 import { deleteFileFromUploadThing } from "@/src/shared/utils/uploadthing-utils";
+import { communityRepository, ICommunityRepository } from "./CommunityRepository";
+import { IMembershipRepository, membershipRepository } from './MembershipRepository';
 
 class CommunityService {
-    constructor(private communityRepository: ICommunityRepository) {}
+    constructor(
+        private communityRepository: ICommunityRepository,
+        private membershipRepository: IMembershipRepository
+    ){}
 
     async createCoreCommunity(data: CommunityInput, userId: string) {
-        const community = await this.communityRepository.create({
+        await this.communityRepository.create({
             ...data,
             createdBy: userId,
         });
@@ -22,11 +26,13 @@ class CommunityService {
         const communities = await this.communityRepository.findByUser(user.id);
         const enriched = await Promise.all(
             communities.map(async (community) => {
-                const isMember = true;
-                const isAdmin = CommunityPolicy.isAdmin(user, community);
+                const isMember = true
+                const isAdmin = CommunityPolicy.isAdmin(user, community)
+                const membersCount = await this.membershipRepository.getMembersCount(community.id)
 
                 return {
                     data: community,
+                    membersCount,
                     context: {
                         isMember,
                         isAdmin,
@@ -34,20 +40,9 @@ class CommunityService {
                     permissions: {
                         canEdit: CommunityPolicy.canEdit(user, community),
                         canDelete: CommunityPolicy.canDelete(user, community),
-                        canViewMembers: CommunityPolicy.canViewMembers(
-                            user,
-                            community,
-                        ),
-                        canJoin: MembershipPolicy.canJoin(
-                            user,
-                            community,
-                            isMember,
-                        ),
-                        canLeave: MembershipPolicy.canLeave(
-                            user,
-                            community,
-                            isMember,
-                        ),
+                        canViewMembers: CommunityPolicy.canViewMembers(user, community),
+                        canJoin: MembershipPolicy.canJoin(user, community, isMember),
+                        canLeave: MembershipPolicy.canLeave(user, community, isMember),
                     },
                 };
             }),
@@ -61,19 +56,30 @@ class CommunityService {
         return community;
     }
 
-    async getCoreCommunityDetails(communityId: string, user: User) {
+    async getCoreCommunityDetails(communityId: string, user?: User) {
 
         const community = await this.getCoreCommunity(communityId)
-
         if ( !community ) {
             return null
         }
 
-        const isMember = false
+        const membersCount = await this.membershipRepository.getMembersCount(community.id)
+
+        if ( !user ) {
+            return {
+                data: community,
+                membersCount,
+                context: null,
+                permissions: null
+            }
+        }
+
+        const isMember = await membershipService.isMember(communityId, user.id)
         const isAdmin = CommunityPolicy.isAdmin(user, community)
 
         return {
             data: community,
+            membersCount,
             context: {
                 isMember,
                 isAdmin,
@@ -122,6 +128,37 @@ class CommunityService {
 
         return updated;
     }
+
+    async deleteCoreCommunity(communityId: string, password: string, user: User) {
+
+        // Obtener comunidad
+        const community = await this.getCoreCommunity(communityId)
+
+        // Revisar permisos
+        if ( !CommunityPolicy.canDelete(user, community!) ) throw new Error('Acceso Denegado.');
+
+        // Verificar password
+        const isValidPassword = await checkPassword(password)
+        if ( !isValidPassword ) {
+            return {
+                error: 'Password Inválido.',
+                success: ''
+            }
+        }
+
+        // Eliminar la imagen de UploadThing si existe
+        if ( community?.imageUrl ) {
+            await deleteFileFromUploadThing(community.imageUrl)
+        }
+
+        // Eliminar la comunidad
+        await this.communityRepository.delete(communityId)
+
+        return {
+            error: '',
+            success: 'CoreCommunity Eliminada Correctamente.'
+        }
+    }
 }
 
-export const communityService = new CommunityService(communityRepository);
+export const communityService = new CommunityService(communityRepository, membershipRepository)

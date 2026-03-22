@@ -4,7 +4,7 @@ import { PlusCircleIcon, UsersIcon } from "@heroicons/react/24/outline";
 
 import { Heading } from "@/components/typography";
 import { generatePageTitle } from "@/src/shared/utils";
-import { MyCommunities } from "@/src/features/communities";
+import { DeleteCommunityModal, MyCommunities } from "@/src/features/communities";
 
 const title: string = "Administra tus Comunidades";
 
@@ -36,6 +36,8 @@ export default function CommunitiesPage() {
             </div>
 
             <MyCommunities />
+
+            <DeleteCommunityModal />
         </>
     );
 }

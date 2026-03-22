@@ -9,6 +9,7 @@ export interface ICommunityRepository {
     findByUser(userId: string, limit?: number): Promise<SelectCoreCommunity[]>
     findById(communityId: string): Promise<SelectCoreCommunity | undefined>
     update(communityId: string, data: Partial<InserCoreCommunity>): Promise<SelectCoreCommunity | undefined>
+    delete(communityId: string): Promise<void>
 }
 
 class CommunityRepository implements ICommunityRepository {
@@ -30,6 +31,10 @@ class CommunityRepository implements ICommunityRepository {
     async update(communityId: string, data: Partial<InserCoreCommunity>): Promise<SelectCoreCommunity | undefined> {
         const [res] = await db.update(community).set(data).where(eq(community.id, communityId)).returning()
         return res
+    }
+
+    async delete(communityId: string): Promise<void> {
+        await db.delete(community).where(eq(community.id, communityId))
     }
 }
 

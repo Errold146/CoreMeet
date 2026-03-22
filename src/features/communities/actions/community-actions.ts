@@ -1,8 +1,9 @@
 "use server"
 
 import { requireAuth } from "@/src/lib/auth-server";
-import { CommunityInput, CommunitySchema } from "../schemas/communitySchema";
 import { communityService } from "../services/CommunityService";
+import { CommunityInput, CommunitySchema } from "../schemas/communitySchema";
+import { CheckPasswordInput, CheckPasswordSchema } from '../../auth/schemas/authSchema';
 
 export async function createCoreCommunityAction(input: CommunityInput) {
 
@@ -70,4 +71,26 @@ export async function updateCoreCommunityAction(
             success: ''
         }
     }
+}
+
+export async function deleteCoreCommunityAction(input: CheckPasswordInput, id: string) {
+
+    const { session } = await requireAuth()
+    if ( !session ) {
+        return {
+            error: 'Acceso denegado.',
+            success: ''
+        }
+    }
+
+    const data = CheckPasswordSchema.safeParse(input)
+    if ( !data.success ) {
+        return {
+            error: 'Datos inválidos.',
+            success: ''
+        }
+    }
+
+    const res = await communityService.deleteCoreCommunity(id, input.password, session.user)
+    return res
 }
