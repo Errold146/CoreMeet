@@ -36,6 +36,13 @@
       "when": 1774060357144,
       "tag": "0004_powerful_owl",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1774162634286,
+      "tag": "0005_curious_fixer",
+      "breakpoints": true
     }
   ]
 }

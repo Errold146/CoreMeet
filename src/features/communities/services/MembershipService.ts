@@ -1,14 +1,27 @@
 import { User } from "better-auth";
+import { eq } from "drizzle-orm";
+
+import { db } from "@/src/db";
+import { users } from "@/src/db/schema";
 import { communityRepository } from "./CommunityRepository";
-import { membershipRepository, IMembershipRepository } from "./MembershipRepository";
-import { community } from "@/src/db/schema";
 import { CommunityPolicy } from "../policies/CommunityPolicy";
 import { MembershipPolicy } from "../policies/MembershipPolicy";
+import { membershipRepository, IMembershipRepository } from "./MembershipRepository";
+import { INotificationService, notificationService } from '../../notifications/services/NotificationService';
+import { INotificationRepository, notificationRepository } from '../../notifications/services/NotificationRepository';
 
 class MembershipService {
-    constructor(private membershipRepository: IMembershipRepository) {}
+    constructor(
+        private membershipRepository: IMembershipRepository,
+        private notificationRepository: INotificationRepository,
+        private notificationService: INotificationService
+    ){}
 
     async joinCommunity(communityId: string, userId: string) {
+
+        const community = await communityRepository.findById(communityId);
+        if ( !community ) return;
+
         // Verificar si ya es miembro
         const isMember = await this.membershipRepository.isMember(
             communityId,
@@ -26,6 +39,17 @@ class MembershipService {
             communityId,
             userId,
         });
+
+        // Obtener el usuario
+        const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+
+        // Crear notificación
+        await this.notificationService.createAndNotify({
+            userId: community?.createdBy,
+            actorName: user?.name || 'Usuario',
+            message: 'Se unio a tu CoreCommunity',
+            target: community.name,
+        })
 
         return {
             error: "",
@@ -101,4 +125,4 @@ class MembershipService {
     }
 }
 
-export const membershipService = new MembershipService(membershipRepository);
+export const membershipService = new MembershipService(membershipRepository, notificationRepository, notificationService);
