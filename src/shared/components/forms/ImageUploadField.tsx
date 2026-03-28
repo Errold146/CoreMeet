@@ -1,9 +1,9 @@
 "use client"
 
-import { useState, useRef, useEffect } from 'react';
-import { useFormContext } from 'react-hook-form';
-import { toast } from 'sonner';
 import Image from 'next/image';
+import { toast } from 'sonner';
+import { useFormContext } from 'react-hook-form';
+import { useState, useRef, useEffect } from 'react';
 
 import { UploadDropzone } from '@/src/shared/utils';
 import { FormError, FormLabel } from '@/components/forms';
@@ -36,7 +36,7 @@ export function ImageUploadField({
     const cleanupSkipRef = useRef(false);
 
     const error = errors[name];
-    const currentImage = getValues('imageUrl') ? getValues('imageUrl') : null
+    const currentImage = getValues(name) ? getValues(name) : null
     const text = 'Imagen Actual de CoreCommunity'
 
     // Marcar que no se debe limpiar cuando el formulario se envió exitosamente
@@ -136,6 +136,11 @@ export function ImageUploadField({
                             ? '✓ Imagen cargada exitosamente'
                             : (isUploading ? 'Subiendo imagen...' : 'Elige un archivo o arrástralo aquí...'),
                         allowedContent: uploadedUrl ? 'Puedes cerrar cualquier ventana abierta' : `Máximo 1 imagen de ${maxFileSize}`
+                    }}
+                    appearance={{
+                        container: error
+                            ? "w-full border-2 border-dashed border-red-500 hover:border-red-600 bg-red-50/50 hover:bg-red-100/50 rounded-xl p-8 transition-all duration-300 cursor-pointer shadow-md hover:shadow-lg"
+                            : "w-full border-2 border-dashed border-azul-400 hover:border-azul-600 bg-azul-50/50 hover:bg-azul-100/50 rounded-xl p-8 transition-all duration-300 cursor-pointer shadow-md hover:shadow-lg"
                     }}
                     onUploadBegin={() => {
                         if (uploadInProgressRef.current || uploadedUrl) {

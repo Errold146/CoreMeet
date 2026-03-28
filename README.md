@@ -10,6 +10,8 @@
 ![Headless UI](https://img.shields.io/badge/Headless_UI-2.2.9-66E3FF?style=for-the-badge&logo=headlessui&logoColor=black)
 ![React Hook Form](https://img.shields.io/badge/React_Hook_Form-7.71.2-EC5990?style=for-the-badge&logo=reacthookform&logoColor=white)
 ![Zod](https://img.shields.io/badge/Zod-4.3.6-3E67B1?style=for-the-badge&logo=zod&logoColor=white)
+![React Leaflet](https://img.shields.io/badge/React_Leaflet-4.2.1-199900?style=for-the-badge&logo=leaflet&logoColor=white)
+![Leaflet](https://img.shields.io/badge/Leaflet-1.9.4-199900?style=for-the-badge&logo=leaflet&logoColor=white)
 ![Nodemailer](https://img.shields.io/badge/Nodemailer-8.0.2-339933?style=for-the-badge&logo=nodemailer&logoColor=white)
 ![UploadThing](https://img.shields.io/badge/UploadThing-7.7.4-F97316?style=for-the-badge&logo=upload&logoColor=white)
 ![Zustand](https://img.shields.io/badge/Zustand-5.0.12-A855F7?style=for-the-badge&logo=zustand&logoColor=white)
@@ -24,15 +26,28 @@
 
 ### 🎯 Características Principales
 
-- **CoreConnect**: Encuentros globales entre colaboradores
+- **CoreConnect**: Sistema completo de eventos y encuentros globales entre colaboradores
+  - Eventos presenciales con ubicación geográfica (mapa interactivo)
+  - Eventos virtuales con soporte para enlaces de reunión (Zoom, Teams, Google Meet, etc.)
+  - Sistema de categorías para organizar eventos
+  - Gestión de cupos y disponibilidad
+  - Integración con mapas para ubicaciones físicas
 - **CoreCommunity**: Espacios comunitarios para grupos de interés (CRUD completo)
-- **Sistema de Notificaciones**: Notificaciones en tiempo real con contador dinámico
+  - Creación y gestión de comunidades
+  - Sistema de miembros y pertenencia
+  - Validación de permisos y políticas de acceso
+- **Sistema de Notificaciones**: Notificaciones en tiempo real con Pusher y WebSockets
+  - Contador dinámico de notificaciones no leídas
+  - Actualización automática sin recargar página
 - **Sistema de Autenticación**: Autenticación completa con Better Auth
+  - Registro y login con validación de email
+  - Recuperación y restablecimiento de contraseña
+  - Sesiones persistentes y seguras
 - **Gestión de Archivos**: Subida y gestión de imágenes con UploadThing
-- Sistema de reuniones departamentales
-- Comunicación en tiempo real
-- Red social empresarial interna
-- Dashboard con diseño oscuro elegante y moderno
+  - Optimización automática de imágenes
+  - Eliminación de archivos antiguos
+- **Dashboard**: Panel administrativo con diseño oscuro elegante y moderno
+- **Comunicación en tiempo real**: Integración con Pusher para eventos instantáneos
 
 ## 🚀 Stack Tecnológico
 
@@ -48,13 +63,14 @@
 | **Headless UI** | Componentes UI accesibles sin estilos |
 | **React Hook Form** | Gestión de formularios con validación |
 | **Zod 4** | Validación de esquemas TypeScript |
+| **React Leaflet** | Mapas interactivos para eventos presenciales |
+| **HERE Maps API** | Geocoding y búsqueda de ubicaciones |
 | **Heroicons** | Librería de iconos SVG |
 | **Nodemailer** | Envío de emails transaccionales |
 | **Sonner** | Sistema de notificaciones toast |
 | **UploadThing** | Gestión y almacenamiento de archivos |
 | **Zustand** | Gestión de estado global |
 | **Date-fns** | Manipulación y formato de fechas |
-| **Heroicons** | Librería de iconos SVG |
 | **Clsx** | Utilidad para clases CSS condicionales |
 | **Pusher** | WebSockets y eventos en tiempo real |
 
@@ -95,7 +111,9 @@ core-meet/
 │   │   ├── index.ts             # Configuración de Drizzle
 │   │   └── schema/
 │   │       ├── auth-schema.ts   # Schema de autenticación
+│   │       ├── category.ts      # Schema de categorías
 │   │       ├── community.ts     # Schema de comunidades
+│   │       ├── connects.ts      # Schema de eventos (CoreConnect)
 │   │       ├── notifications.ts # Schema de notificaciones
 │   │       └── index.ts
 │   ├── features/                 # Features del proyecto
@@ -141,6 +159,23 @@ core-meet/
 │   │   │   ├── types/
 │   │   │   │   └── index.ts                     # Tipos de comunidades
 │   │   │   └── index.ts
+│   │   ├── connects/            # Feature de eventos (CoreConnect)
+│   │   │   ├── actions/
+│   │   │   │   └── connect-action.ts    # Server Actions para eventos
+│   │   │   ├── components/
+│   │   │   │   ├── ConnectForm.tsx      # Formulario de evento con toggle virtual/presencial
+│   │   │   │   ├── CreateConnect.tsx    # Crear evento con React Hook Form
+│   │   │   │   ├── LocationPicker.tsx   # Selector de ubicación con mapa interactivo
+│   │   │   │   └── index.ts
+│   │   │   ├── schemas/
+│   │   │   │   └── connectSchema.ts     # Validación con Zod (discriminated union)
+│   │   │   ├── services/
+│   │   │   │   ├── CategoryRepository.ts   # Capa de datos de categorías
+│   │   │   │   ├── CategoryService.ts      # Lógica de negocio de categorías
+│   │   │   │   ├── ConnectRepository.ts    # Capa de datos de eventos
+│   │   │   │   └── ConnectService.ts       # Lógica de negocio de eventos
+│   │   │   └── types/
+│   │   │       └── connect.types.ts     # Tipos inferidos de Drizzle
 │   │   └── notifications/       # Feature de notificaciones
 │   │       ├── components/
 │   │       │   ├── NotificationList.tsx  # Lista de notificaciones
@@ -253,6 +288,28 @@ core-meet/
 - **DeleteCommunityForm**: Formulario para eliminación de comunidad
 - **NotCommunities**: Estado vacío cuando no hay comunidades
 
+### Connect Components (Eventos)
+
+- **ConnectForm**: Formulario completo para crear eventos (CoreConnect)
+  - Toggle para seleccionar evento virtual o presencial
+  - Campos dinámicos según tipo de evento
+  - Validación con discriminated union de Zod
+  - Integración con UploadThing para imágenes
+  - Selector de fecha y hora
+  - Selector de comunidad y categoría
+  - Campo de cupos disponibles
+- **CreateConnect**: Página de creación de eventos con React Hook Form
+  - Gestión de estado del formulario
+  - Manejo de errores y validaciones
+  - Integración con Server Actions
+- **LocationPicker**: Selector de ubicación interactivo con mapa
+  - Integración con React Leaflet
+  - Búsqueda de ubicaciones con HERE Maps API
+  - Marcador arrastrable para precisión
+  - Autocompletado de direcciones
+  - Validación de coordenadas geográficas
+  - Solo para eventos presenciales
+
 ## 🛣️ Rutas Implementadas
 
 | Ruta | Descripción | Estado |
@@ -267,9 +324,13 @@ core-meet/
 | `/dashboard/communities` | Gestión de comunidades | ✅ Implementado |
 | `/dashboard/communities/create` | Crear nueva comunidad | ✅ Implementado |
 | `/dashboard/communities/joined` | Comunidades unidas | ✅ Implementado |
+| `/dashboard/communities/[id]` | Ver detalle de comunidad | ✅ Implementado |
 | `/dashboard/communities/[id]/edit` | Editar comunidad | ✅ Implementado |
+| `/dashboard/connects` | Gestión de eventos | ✅ Implementado |
+| `/dashboard/connects/create` | Crear nuevo evento (CoreConnect) | ✅ Implementado |
 | `/api/auth/[...all]` | API routes de Better Auth | ✅ Implementado |
 | `/api/user/notifications` | API de conteo de notificaciones | ✅ Implementado |
+| `/api/categories` | API de categorías de eventos | ✅ Implementado |
 | `/api/uploadthing` | API de UploadThing para archivos | ✅ Implementado |
 | `/api/uploadthing/delete` | Eliminar archivos de UploadThing | ✅ Implementado |
 
@@ -359,6 +420,36 @@ BETTER_AUTH_SECRET="tu-secret-key-muy-seguro-aqui"
 BETTER_AUTH_URL="http://localhost:3000"
 
 # Nodemailer (SMTP)
+EMAIL_HOST="smtp.gmail.com"
+EMAIL_PORT="587"
+EMAIL_USER="tu-email@gmail.com"
+EMAIL_PASS="tu-app-password"
+
+# UploadThing (para subida de imágenes)
+UPLOADTHING_TOKEN="tu-token-de-uploadthing"
+
+# Pusher (para notificaciones en tiempo real)
+NEXT_PUBLIC_PUSHER_KEY="tu-pusher-key"
+NEXT_PUBLIC_PUSHER_CLUSTER="tu-pusher-cluster"
+PUSHER_APP_ID="tu-pusher-app-id"
+PUSHER_SECRET="tu-pusher-secret"
+
+# HERE Maps API (para LocationPicker y geocoding)
+NEXT_PUBLIC_HERE_API_KEY="tu-here-maps-api-key"
+```
+
+### Ejecutar Migraciones
+
+```bash
+# Generar migraciones
+npm run drizzle-kit generate
+
+# Aplicar migraciones a la base de datos
+npm run drizzle-kit push
+
+# Iniciar servidor de desarrollo
+npm run dev
+```
 
 ## 🗄️ Base de Datos
 
@@ -386,6 +477,37 @@ El proyecto utiliza Drizzle ORM con PostgreSQL. Las principales tablas son:
 - **Primary Key**: Compuesta (communityId, userId)
 - **Foreign Keys**: Cascade delete en community y user
 
+#### **Categories**
+- `id` (UUID): Identificador único
+- `name` (VARCHAR): Nombre de la categoría
+- `slug` (VARCHAR): Slug único para URLs
+- `createdAt` (TIMESTAMP): Fecha de creación
+
+#### **Connects** (Eventos)
+- `id` (UUID): Identificador único
+- `title` (VARCHAR 255): Título del evento
+- `details` (TEXT): Descripción detallada del evento
+- `availableSeats` (INTEGER): Cupos disponibles
+- `date` (DATE): Fecha del evento
+- `time` (TIME): Hora del evento
+- `image` (VARCHAR 100): URL de la imagen del evento
+- `communityId` (UUID): ID de la comunidad organizadora (FK - cascade delete)
+- `categoryId` (UUID): ID de la categoría del evento
+- `createdBy` (TEXT): ID del usuario creador (FK - cascade delete)
+- `virtual` (BOOLEAN): Si es evento virtual o presencial (default: false)
+- `meetingUrl` (TEXT): URL de reunión virtual (opcional, para eventos virtuales)
+
+#### **ConnectLocations** (Ubicaciones de Eventos)
+- `id` (UUID): Identificador único
+- `connectId` (UUID): ID del evento (FK - cascade delete)
+- `placeName` (VARCHAR 255): Nombre del lugar
+- `address` (VARCHAR 255): Dirección completa
+- `city` (VARCHAR 100): Ciudad
+- `country` (VARCHAR 100): País
+- `lat` (DOUBLE PRECISION): Latitud (coordenada geográfica)
+- `lng` (DOUBLE PRECISION): Longitud (coordenada geográfica)
+- **Foreign Key**: Cascade delete cuando se elimina el evento
+
 #### **Notifications**
 - `id` (UUID): Identificador único
 - `userId` (TEXT): ID del usuario destinatario
@@ -409,35 +531,8 @@ npx drizzle-kit push
 # Ver estado de migraciones
 npx drizzle-kit status
 ```
-EMAIL_HOST="smtp.gmail.com"
-EMAIL_PORT="587"
-EMAIL_USER="tu-email@gmail.com"
-EMAIL_PASS="tu-app-password"
 
-# UploadThing (para subida de imágenes)
-UPLOADTHING_TOKEN="tu-token-de-uploadthing"
-
-# Pusher (para notificaciones en tiempo real)
-NEXT_PUBLIC_PUSHER_KEY="tu-pusher-key"
-NEXT_PUBLIC_PUSHER_CLUSTER="tu-pusher-cluster"
-PUSHER_APP_ID="tu-pusher-app-id"
-PUSHER_SECRET="tu-pusher-secret"
-```
-
-### Ejecutar Migraciones
-
-```bash
-# Generar migraciones
-npm run drizzle-kit generate
-
-# Aplicar migraciones a la base de datos
-npm run drizzle-kit push
-
-# Iniciar servidor de desarrollo
-npm run dev
-```
-
-### � Sistema de Emails
+## 📧 Sistema de Emails
 
 El proyecto utiliza Nodemailer para el envío de emails transaccionales:
 
@@ -712,6 +807,344 @@ export async function joinCommunityAction(communityId: string) {
 }
 ```
 
+## 🎉 Sistema de Eventos (CoreConnect)
+
+El proyecto implementa un sistema completo de eventos llamado **CoreConnect** para crear encuentros globales entre colaboradores:
+
+### Características
+
+- ✅ **CRUD de Eventos**: Crear, leer, actualizar y eliminar eventos
+- ✅ **Eventos Virtuales y Presenciales**: Sistema de discriminated union para distinguir tipos
+- ✅ **Enlaces de Reunión Virtual**: Campo opcional `meetingUrl` para eventos virtuales (Zoom, Teams, Google Meet, etc.)
+- ✅ **Ubicación Geográfica**: Selector de ubicación con mapa interactivo para eventos presenciales
+- ✅ **Sistema de Categorías**: Organización de eventos por categorías
+- ✅ **Gestión de Cupos**: Control de disponibilidad de asientos
+- ✅ **Integración con Comunidades**: Eventos asociados a comunidades específicas
+- ✅ **Validación Robusta**: Schemas con Zod usando discriminated union
+- ✅ **Políticas de Acceso**: Solo administradores de comunidades pueden crear eventos
+- ✅ **Imágenes de Eventos**: Integración con UploadThing para imágenes
+- ✅ **Responsive**: Formulario adaptado a todos los tamaños de pantalla
+
+### Arquitectura
+
+El sistema de eventos sigue el patrón Repository + Service + Policy:
+
+```typescript
+// Repositories - Acceso a datos
+ConnectRepository
+  ├── insert()              // Insertar evento (con ubicación si es presencial)
+
+CategoryRepository
+  ├── getAll()              // Obtener todas las categorías
+
+// Services - Lógica de negocio
+ConnectService
+  ├── createConnect()       // Crear evento con validación de permisos
+
+CategoryService
+  ├── getAll()              // Obtener categorías
+
+// Policies - Validación de permisos
+CommunityPolicy
+  ├── isAdmin()             // Verificar si usuario es admin de la comunidad
+```
+
+### Eventos Virtuales vs Presenciales
+
+El sistema usa una **discriminated union** de Zod para manejar dos tipos de eventos:
+
+#### **Eventos Virtuales** (`virtual: true`)
+```typescript
+{
+  virtual: true,
+  meetingUrl?: string,  // Opcional: URL de Zoom, Teams, Google Meet, etc.
+  // ... campos comunes
+}
+```
+
+- Campo `meetingUrl` **opcional** para enlace de reunión
+- No requiere ubicación física
+- Validación de URL cuando se proporciona
+- Perfecto para: reuniones remotas, webinars, talleres online
+
+#### **Eventos Presenciales** (`virtual: false`)
+```typescript
+{
+  virtual: false,
+  location: {
+    placeName: string,
+    address: string,
+    city: string,
+    country: string,
+    lat: number,
+    lng: number
+  },
+  // ... campos comunes
+}
+```
+
+- Campo `location` **requerido** con datos completos
+- Selector de ubicación con mapa interactivo (LocationPicker)
+- Validación de coordenadas geográficas
+- Perfecto para: meetups, eventos corporativos, talleres presenciales
+
+### Schemas de Validación
+
+```typescript
+// Schema Base - Campos comunes a todos los eventos
+const BaseSchema = z.object({
+  title: z.string().min(1, { message: "El Titulo es requerido." }),
+  details: z.string().min(50, { message: "Añade más detalles al Evento." }),
+  image: z.url({ message: "La imagen es requerida." }),
+  communityId: z.uuid({ message: "Elige Una CoreComunity." }),
+  availableSeats: z.preprocess(Number, z.number().min(1)),
+  date: z.iso.date({ message: "Añade una Fecha." }),
+  time: z.string().min(1, { message: "La Hora es requerida." }),
+  categoryId: z.uuid({ message: "Elige Una Categoría." }),
+});
+
+// Schema de Ubicación - Para eventos presenciales
+const ConnectLocationSchema = z.object({
+  placeName: z.string().min(1, { message: "El Nombre del Lugar es requerido." }),
+  address: z.string().min(1, { message: "La Dirección del Lugar es requerida." }),
+  city: z.string().min(1, { message: "La ciudad es requerida." }),
+  country: z.string().min(1, { message: "El país es requerido." }),
+  lat: z.number().min(-90).max(90),
+  lng: z.number().min(-180).max(180)
+});
+
+// Schema de Evento Virtual
+const VirtualConnectSchema = BaseSchema.extend({
+  virtual: z.literal(true),
+  meetingUrl: z.string().url({ message: "Ingresa una URL válida." })
+    .optional().or(z.literal('')),  // Opcional o string vacío
+});
+
+// Schema de Evento Presencial
+const PhysicalConnectSchema = BaseSchema.extend({
+  virtual: z.literal(false),
+  location: ConnectLocationSchema,  // Requerido
+});
+
+// Discriminated Union - El sistema elige el schema correcto
+export const ConnectSchema = z.discriminatedUnion("virtual", [
+  VirtualConnectSchema,
+  PhysicalConnectSchema,
+]);
+
+export type ConnectInput = z.infer<typeof ConnectSchema>;
+```
+
+### Componentes
+
+```typescript
+// Componentes principales
+<ConnectForm />           // Formulario con toggle virtual/presencial
+  ├── Toggle para seleccionar tipo de evento
+  ├── Campos dinámicos según tipo
+  ├── Campo meetingUrl (solo si es virtual)
+  ├── LocationPicker (solo si es presencial)
+  └── Validación con Zod discriminated union
+
+<CreateConnect />         // Página de creación con React Hook Form
+  ├── Gestión de estado compleja
+  ├── Validación en tiempo real
+  └── Integración con Server Actions
+
+<LocationPicker />        // Selector de ubicación con mapa
+  ├── React Leaflet para mapas interactivos
+  ├── HERE Maps API para búsqueda
+  ├── Marcador arrastrable
+  ├── Autocompletado de direcciones
+  └── Validación de coordenadas
+```
+
+### Sistema de Categorías
+
+Las categorías organizan los eventos y se gestionan mediante:
+
+```typescript
+// Obtener todas las categorías
+const categories = await categoryService.getAll();
+
+// Estructura de categoría
+type Category = {
+  id: string;
+  name: string;
+  slug: string;
+  createdAt: Date | null;
+};
+```
+
+**API Route**: `/api/categories` (GET)
+- Devuelve todas las categorías disponibles
+- Usado en el selector de categorías del formulario
+
+### LocationPicker - Mapa Interactivo
+
+El componente `LocationPicker` proporciona una interfaz interactiva para seleccionar ubicaciones:
+
+#### Características
+- **Mapa Interactivo**: Visualización con React Leaflet
+- **Búsqueda de Ubicaciones**: Integración con HERE Maps Geocoding API
+- **Marcador Arrastrable**: Ajuste fino de la ubicación
+- **Autocompletado**: Sugerencias de direcciones mientras escribes
+- **Validación Automática**: Actualiza coordenadas y datos de ubicación
+- **Carga Dinámica**: Se carga solo para eventos presenciales (optimiza bundle)
+
+#### Uso
+```typescript
+// El componente es dinámico y solo se carga cuando se necesita
+const DynamicLocationPicker = dynamic(() => import('./LocationPicker'), {
+  ssr: false  // Desactiva SSR para usar APIs del navegador
+});
+
+// Dentro del formulario (solo eventos presenciales)
+{!isVirtual && (
+  <DynamicLocationPicker />
+)}
+```
+
+#### Integración con React Hook Form
+```typescript
+const { setValue, watch } = useFormContext<ConnectInput>();
+
+// Actualizar ubicación desde el mapa
+const handleLocationSelect = (location: Location) => {
+  setValue('location.placeName', location.title);
+  setValue('location.address', location.address);
+  setValue('location.city', location.city);
+  setValue('location.country', location.country);
+  setValue('location.lat', location.position.lat);
+  setValue('location.lng', location.position.lng);
+};
+```
+
+### Políticas de Acceso
+
+Solo los **administradores** (creadores) de una comunidad pueden crear eventos:
+
+```typescript
+// CommunityPolicy
+class CommunityPolicy {
+  static isAdmin(user: User, community: SelectCoreCommunity): boolean {
+    return user.id === community.createdBy;
+  }
+}
+
+// Validación en el servicio
+async createConnect(data: ConnectInput, user: User) {
+  const community = await this.communityRepository.findById(data.communityId);
+  
+  if (!community || !CommunityPolicy.isAdmin(user, community)) {
+    throw new Error('Acceso Denegado.');
+  }
+  
+  await this.connectRepository.insert({...data, createdBy: user.id});
+}
+```
+
+### Base de Datos - Relaciones
+
+```sql
+-- Tabla principal de eventos
+CREATE TABLE connects (
+  id UUID PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  details TEXT NOT NULL,
+  available_seats INTEGER NOT NULL,
+  date DATE NOT NULL,
+  time TIME NOT NULL,
+  image VARCHAR(100) NOT NULL,
+  community_id UUID REFERENCES communities(id) ON DELETE CASCADE,
+  category_id UUID NOT NULL,
+  created_by TEXT REFERENCES users(id) ON DELETE CASCADE,
+  virtual BOOLEAN DEFAULT FALSE NOT NULL,
+  meeting_url TEXT  -- Opcional: para eventos virtuales
+);
+
+-- Tabla de ubicaciones (solo para eventos presenciales)
+CREATE TABLE connect_locations (
+  id UUID PRIMARY KEY,
+  connect_id UUID REFERENCES connects(id) ON DELETE CASCADE,
+  place_name VARCHAR(255) NOT NULL,
+  address VARCHAR(255) NOT NULL,
+  city VARCHAR(100) NOT NULL,
+  country VARCHAR(100) NOT NULL,
+  latitude DOUBLE PRECISION NOT NULL,
+  longitude DOUBLE PRECISION NOT NULL
+);
+```
+
+### Uso - Crear un Evento
+
+```typescript
+// Evento Virtual
+const virtualEvent = {
+  title: 'Daily Standup',
+  details: 'Reunión diaria del equipo de desarrollo para sincronizar avances',
+  image: 'https://uploadthing.com/...',
+  communityId: 'community-uuid',
+  categoryId: 'category-uuid',
+  availableSeats: 50,
+  date: '2026-04-15',
+  time: '09:00',
+  virtual: true,
+  meetingUrl: 'https://zoom.us/j/123456789'  // Opcional
+};
+
+// Evento Presencial
+const physicalEvent = {
+  title: 'Workshop de React',
+  details: 'Taller práctico de React y Next.js para desarrolladores frontend',
+  image: 'https://uploadthing.com/...',
+  communityId: 'community-uuid',
+  categoryId: 'category-uuid',
+  availableSeats: 30,
+  date: '2026-05-20',
+  time: '14:00',
+  virtual: false,
+  location: {
+    placeName: 'Centro de Innovación',
+    address: 'Calle Principal 123',
+    city: 'San José',
+    country: 'Costa Rica',
+    lat: 9.936561,
+    lng: -84.107493
+  }
+};
+
+// Crear evento (Server Action)
+await createConnectAction(virtualEvent);
+```
+
+### Server Actions
+
+```typescript
+// connect-action.ts
+'use server'
+
+export async function createConnectAction(input: ConnectInput) {
+  const { session } = await requireAuth();
+  
+  if (!session) {
+    return { error: 'Acceso Denegado.', success: '' };
+  }
+
+  // Validación con Zod (discriminated union automática)
+  const data = ConnectSchema.safeParse(input);
+  
+  if (!data.success) {
+    return { error: 'Error de validación.', success: '' };
+  }
+
+  // Crear evento con validación de permisos
+  await connectService.createConnect(data.data, session.user);
+
+  return { error: '', success: 'CoreConnect creado correctamente.' };
+}
+```
+
 ## 📤 Sistema de Uploads
 
 UploadThing está integrado para la gestión de archivos:
@@ -764,6 +1197,22 @@ import { requireAuth } from "@/lib/auth-server"
 
 ## 🎯 Mejoras Recientes
 
+### Sistema de Eventos CoreConnect (v1.4.0)
+- ✅ Implementación completa del sistema de eventos (CoreConnect)
+- ✅ Eventos virtuales con campo `meetingUrl` opcional para Zoom/Teams/Meet
+- ✅ Eventos presenciales con sistema de ubicación geográfica
+- ✅ LocationPicker interactivo con React Leaflet
+- ✅ Integración con HERE Maps API para geocoding y búsqueda
+- ✅ Discriminated union de Zod para validación de tipos de eventos
+- ✅ Sistema de categorías para organizar eventos
+- ✅ Políticas de acceso: Solo admin de comunidad puede crear eventos
+- ✅ ConnectRepository y ConnectService con patrón Repository
+- ✅ Gestión de cupos disponibles por evento
+- ✅ Validación robusta de coordenadas geográficas
+- ✅ Migración de base de datos con tablas connects y connect_locations
+- ✅ API route para obtener categorías de eventos
+- ✅ Carga dinámica de LocationPicker para optimizar bundle
+
 ### Notificaciones en Tiempo Real con Pusher (v1.3.0)
 - ✅ Integración completa de Pusher para WebSockets
 - ✅ Notificaciones instantáneas sin recargar la página
@@ -789,6 +1238,7 @@ import { requireAuth } from "@/lib/auth-server"
 - ✅ Estado vacío elegante para notificaciones
 - ✅ Mejora en la experiencia responsive
 - ✅ Optimización de componentes de navegación
+- ✅ Formularios dinámicos con campos condicionales
 
 ### Correcciones Técnicas
 - ✅ Fix de errores de hidratación en Headless UI components
@@ -798,6 +1248,7 @@ import { requireAuth } from "@/lib/auth-server"
 - ✅ Eliminación de clases dark mode (diseño oscuro fijo)
 - ✅ Solución de conflictos de animación con CSS variables
 - ✅ Fix de warnings de React con propiedades shorthand/non-shorthand
+- ✅ Validación correcta de discriminated unions en React Hook Form
 
 ## 🤝 Contribuir
 
@@ -858,49 +1309,40 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver el 
   - [x] Ver listado de comunidades propias
   - [x] Ver comunidades a las que se unió
   - [x] Políticas de acceso y validación
+  - [x] Sistema de miembros
+- [x] **CoreConnect (Eventos)** - Sistema completo de eventos
+  - [x] Crear eventos con validación de permisos
+  - [x] Eventos virtuales con campo `meetingUrl` opcional
+  - [x] Eventos presenciales con ubicación geográfica
+  - [x] LocationPicker con mapa interactivo (React Leaflet)
+  - [x] Integración con HERE Maps API para búsqueda
+  - [x] Sistema de categorías de eventos
+  - [x] Discriminated union de Zod para tipos de eventos
+  - [x] Validación robusta con políticas de acceso
+  - [x] Gestión de cupos disponibles
+  - [x] Subida de imágenes para eventos
 - [x] Gestión de uploads con UploadThing
-  - [x] Subida de imágenes para comunidades
-  - [x] Eliminación de imágenes antiguas
-  - [x] Middleware de autenticación en uploads
-
-### � Completadas
-
-- [x] Sistema de autenticación con Better Auth
-- [x] Integración de Drizzle ORM con PostgreSQL
-- [x] Validación de formularios con Zod
-- [x] Formulario de registro funcional
-- [x] Formulario de login funcional
-- [x] Recuperación de contraseña con envío de email
-- [x] Restablecimiento de contraseña
-- [x] Dashboard de usuario con navegación
-- [x] Sistema de notificaciones con Sonner
-- [x] Menú de usuario con opciones de perfil
-- [x] Integración de email con Nodemailer
-- [x] Sistema de emails transaccionales (verificación y recuperación)
-- [x] **CoreCommunity (Comunidades)** - CRUD completo
-  - [x] Crear comunidades con imagen
-  - [x] Editar comunidades existentes
-  - [x] Ver listado de comunidades propias
-  - [x] Ver comunidades a las que se unió
-  - [x] Políticas de acceso y validación
-- [x] Gestión de uploads con UploadThing
-  - [x] Subida de imágenes para comunidades
+  - [x] Subida de imágenes para comunidades y eventos
   - [x] Eliminación de imágenes antiguas
   - [x] Middleware de autenticación en uploads
 - [x] **Notificaciones en tiempo real con Pusher**
   - [x] Integración de WebSockets
   - [x] Canales individualizados por usuario
   - [x] Actualización automática de UI
+  - [x] Contador de notificaciones en tiempo real
 
-### �🚧 Próximas Funcionalidades
+### 🚧 Próximas Funcionalidades
 
+- [ ] Ver listado de todos los eventos
+- [ ] Filtrado y búsqueda de eventos por categoría
+- [ ] Sistema de inscripción a eventos
+- [ ] Gestión de asistentes a eventos
+- [ ] Editar y eliminar eventos
+- [ ] Ver eventos de comunidades unidas
 - [ ] Verificación de email automática
 - [ ] Sistema de perfiles de usuario completo
-- [ ] Gestión de miembros en comunidades
 - [ ] Sistema de roles y permisos en comunidades
 - [ ] Chat en tiempo real (escalando Pusher)
-- [ ] Sistema de caché con Redis
-- [ ] CoreConnect (Encuentros globales)
 - [ ] Sistema de reuniones departamentales
 - [ ] Marcar notificaciones como leídas
 - [ ] Búsqueda y filtrado de comunidades
