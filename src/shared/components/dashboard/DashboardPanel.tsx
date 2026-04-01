@@ -59,7 +59,7 @@ export function DashboardPanel() {
                 <div className="flex grow flex-col gap-y-6 overflow-y-auto bg-linear-to-b from-mirage-950 via-mirage-900 to-mirage-950 border-r border-mirage-800 px-5 shadow-xl">
                     <div className="flex justify-center pt-6 w-full">
                         <div className="w-36 transform transition-transform duration-300 hover:scale-105">
-                            <Link href={'/'} className="cursor-pointer">
+                            <Link href={'/'} className="cursor-pointer" target="_blank" rel="noopener noreferrer">
                                 <Logo />
                             </Link>
                         </div>

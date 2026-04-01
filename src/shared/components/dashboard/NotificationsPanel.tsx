@@ -51,6 +51,8 @@ export default function NotificationsPanel() {
         <Link
             className="relative group p-2.5 text-mirage-400 hover:text-azul-400 hover:bg-mirage-800 rounded-xl transition-all duration-300 ease-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-azul-500 focus:ring-offset-2 focus:ring-offset-mirage-950"
             href={'/dashboard/notifications'}
+            target="_blank"
+            rel="noopener noreferrer"
         >
             <span className="sr-only">View notifications</span>
             <BellIcon

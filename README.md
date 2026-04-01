@@ -10,7 +10,7 @@
 ![Headless UI](https://img.shields.io/badge/Headless_UI-2.2.9-66E3FF?style=for-the-badge&logo=headlessui&logoColor=black)
 ![React Hook Form](https://img.shields.io/badge/React_Hook_Form-7.71.2-EC5990?style=for-the-badge&logo=reacthookform&logoColor=white)
 ![Zod](https://img.shields.io/badge/Zod-4.3.6-3E67B1?style=for-the-badge&logo=zod&logoColor=white)
-![React Leaflet](https://img.shields.io/badge/React_Leaflet-4.2.1-199900?style=for-the-badge&logo=leaflet&logoColor=white)
+![React Leaflet](https://img.shields.io/badge/React_Leaflet-5.0.0-199900?style=for-the-badge&logo=leaflet&logoColor=white)
 ![Leaflet](https://img.shields.io/badge/Leaflet-1.9.4-199900?style=for-the-badge&logo=leaflet&logoColor=white)
 ![Nodemailer](https://img.shields.io/badge/Nodemailer-8.0.2-339933?style=for-the-badge&logo=nodemailer&logoColor=white)
 ![UploadThing](https://img.shields.io/badge/UploadThing-7.7.4-F97316?style=for-the-badge&logo=upload&logoColor=white)
@@ -19,6 +19,8 @@
 ![Date-fns](https://img.shields.io/badge/Date--fns-4.1.0-770C56?style=for-the-badge&logo=calendar&logoColor=white)
 ![Heroicons](https://img.shields.io/badge/Heroicons-2.2.0-8B5CF6?style=for-the-badge&logo=heroicons&logoColor=white)
 ![Pusher](https://img.shields.io/badge/Pusher-5.3.3-300D4F?style=for-the-badge&logo=pusher&logoColor=white)
+![Upstash Redis](https://img.shields.io/badge/Upstash_Redis-1.37.0-00C7B7?style=for-the-badge&logo=redis&logoColor=white)
+![Upstash Ratelimit](https://img.shields.io/badge/Upstash_Ratelimit-2.0.8-00C7B7?style=for-the-badge&logo=speedtest&logoColor=white)
 
 ## 📋 Descripción
 
@@ -27,15 +29,20 @@
 ### 🎯 Características Principales
 
 - **CoreConnect**: Sistema completo de eventos y encuentros globales entre colaboradores
+  - CRUD completo: crear, editar y eliminar eventos
   - Eventos presenciales con ubicación geográfica (mapa interactivo)
   - Eventos virtuales con soporte para enlaces de reunión (Zoom, Teams, Google Meet, etc.)
   - Sistema de categorías para organizar eventos
   - Gestión de cupos y disponibilidad
-  - Integración con mapas para ubicaciones físicas
+  - **Sistema de asistencia**: confirmar y cancelar asistencia con un click
+  - **Tarjeta del organizador**: info del creador del evento visible públicamente
+  - **Vista pública de eventos**: página de detalle compartible con OpenGraph metadata
 - **CoreCommunity**: Espacios comunitarios para grupos de interés (CRUD completo)
   - Creación y gestión de comunidades
   - Sistema de miembros y pertenencia
   - Validación de permisos y políticas de acceso
+  - **Próximos CoreConnects**: lista de eventos futuros de la comunidad en su página pública
+  - **Vista pública de comunidades**: página de detalle compartible con OpenGraph/Twitter Cards
 - **Sistema de Notificaciones**: Notificaciones en tiempo real con Pusher y WebSockets
   - Contador dinámico de notificaciones no leídas
   - Actualización automática sin recargar página
@@ -43,11 +50,14 @@
   - Registro y login con validación de email
   - Recuperación y restablecimiento de contraseña
   - Sesiones persistentes y seguras
+- **Rate Limiting**: Protección contra abuso de peticiones con Upstash Redis y Ratelimit
+  - Ventana deslizante de 3 peticiones / 10 minutos
 - **Gestión de Archivos**: Subida y gestión de imágenes con UploadThing
   - Optimización automática de imágenes
   - Eliminación de archivos antiguos
 - **Dashboard**: Panel administrativo con diseño oscuro elegante y moderno
 - **Comunicación en tiempo real**: Integración con Pusher para eventos instantáneos
+- **Seguridad en enlaces**: `target="_blank"` con `rel="noopener noreferrer"` en todos los links
 
 ## 🚀 Stack Tecnológico
 
@@ -73,6 +83,8 @@
 | **Date-fns** | Manipulación y formato de fechas |
 | **Clsx** | Utilidad para clases CSS condicionales |
 | **Pusher** | WebSockets y eventos en tiempo real |
+| **Upstash Redis** | Almacenamiento Redis serverless para rate limiting |
+| **Upstash Ratelimit** | Rate limiting con ventana deslizante |
 
 ## 📁 Estructura del Proyecto
 
@@ -81,11 +93,20 @@ core-meet/
 ├── app/                          # App Router de Next.js
 │   ├── (public)/                 # Grupo de rutas públicas
 │   │   ├── layout.tsx           # Layout con Header
-│   │   └── page.tsx             # Página de inicio con Hero
+│   │   ├── page.tsx             # Página de inicio con Hero
+│   │   ├── categories/
+│   │   │   └── [id]/            # Detalle de categoría pública
+│   │   ├── communities/
+│   │   │   └── [id]/
+│   │   │       └── page.tsx     # Detalle de comunidad pública (OpenGraph)
+│   │   └── connects/
+│   │       └── [id]/
+│   │           ├── page.tsx     # Detalle de evento público con asistencia
+│   │           └── error.tsx    # Página de error del evento
 │   ├── api/
-│   │   ├── auth/
-│   │   │   └── [...all]/
-│   │   │       └── route.ts     # API routes de Better Auth
+│   │   ├── auth/[...all]/       # API routes de Better Auth
+│   │   ├── categories/
+│   │   │   └── route.ts         # API de categorías
 │   │   ├── user/
 │   │   │   └── notifications/
 │   │   │       └── route.ts     # API de notificaciones
@@ -98,132 +119,174 @@ core-meet/
 │   │   ├── layout.tsx           # Layout de auth con Logo
 │   │   ├── login/               # Página de inicio de sesión
 │   │   ├── register/            # Página de registro
-│   │   └── forgot-password/     # Recuperación de contraseña
+│   │   ├── forgot-password/     # Recuperación de contraseña
+│   │   └── reset-password/      # Restablecer contraseña
 │   ├── dashboard/                # Panel administrativo
-│   │   ├── layout.tsx           # Layout con navegación
+│   │   ├── layout.tsx           # Layout con navegación lateral
 │   │   ├── page.tsx             # Dashboard principal
-│   │   └── notifications/
-│   │       └── page.tsx         # Página de notificaciones
+│   │   ├── notifications/
+│   │   │   └── page.tsx         # Lista de notificaciones
+│   │   ├── communities/
+│   │   │   ├── page.tsx         # Gestión de comunidades
+│   │   │   ├── not-found.tsx    # Página de comunidad no encontrada
+│   │   │   ├── create/          # Crear comunidad
+│   │   │   ├── joined/          # Comunidades unidas
+│   │   │   └── [id]/
+│   │   │       └── edit/        # Editar comunidad
+│   │   └── connects/
+│   │       ├── page.tsx         # Gestión de CoreConnects
+│   │       ├── not-found.tsx    # Página de connect no encontrado
+│   │       ├── create/          # Crear CoreConnect
+│   │       └── [id]/
+│   │           ├── edit/        # Editar CoreConnect
+│   │           └── error.tsx    # Página de error del connect
 │   ├── globals.css              # Estilos globales
 │   └── layout.tsx               # Root layout
 ├── src/
 │   ├── db/                       # Base de datos
 │   │   ├── index.ts             # Configuración de Drizzle
 │   │   └── schema/
-│   │       ├── auth-schema.ts   # Schema de autenticación
+│   │       ├── auth-schema.ts   # Schema de autenticación (Better Auth)
 │   │       ├── category.ts      # Schema de categorías
-│   │       ├── community.ts     # Schema de comunidades
-│   │       ├── connects.ts      # Schema de eventos (CoreConnect)
+│   │       ├── community.ts     # Schema de comunidades y miembros
+│   │       ├── connects.ts      # Schema de eventos, ubicaciones y asistentes
 │   │       ├── notifications.ts # Schema de notificaciones
 │   │       └── index.ts
 │   ├── features/                 # Features del proyecto
 │   │   ├── auth/                # Feature de autenticación
 │   │   │   ├── actions/
-│   │   │   │   └── auth-actions.ts  # Server Actions
+│   │   │   │   └── auth-actions.ts      # Server Actions
 │   │   │   ├── components/
 │   │   │   │   ├── LoginForm.tsx
 │   │   │   │   ├── RegisterForm.tsx
 │   │   │   │   └── ForgotPasswordForm.tsx
 │   │   │   ├── schemas/
-│   │   │   │   └── authSchema.ts    # Validación con Zod
+│   │   │   │   └── authSchema.ts        # Validación con Zod
 │   │   │   ├── services/
-│   │   │   │   ├── AuthRepository.ts  # Capa de datos
-│   │   │   │   └── AuthService.ts     # Lógica de negocio
+│   │   │   │   ├── AuthRepository.ts
+│   │   │   │   └── AuthService.ts
 │   │   │   └── index.ts
 │   │   ├── communities/         # Feature de comunidades
 │   │   │   ├── actions/
 │   │   │   │   ├── community-actions.ts   # Server Actions para comunidades
 │   │   │   │   └── membership-action.ts   # Server Actions para miembros
 │   │   │   ├── components/
-│   │   │   │   ├── CommunityActionsPanel.tsx    # Panel de acciones
-│   │   │   │   ├── CommunityCard.tsx            # Tarjeta de comunidad
-│   │   │   │   ├── CommunityForm.tsx            # Formulario CRUD
-│   │   │   │   ├── CommunityMembership.tsx      # Gestión de miembros
-│   │   │   │   ├── CreateCoreCommunity.tsx      # Crear comunidad
-│   │   │   │   ├── DeleteCommunityForm.tsx      # Eliminar comunidad
-│   │   │   │   ├── DeleteCommunityModal.tsx     # Modal de confirmación
-│   │   │   │   ├── EditCoreCommunity.tsx        # Editar comunidad
-│   │   │   │   ├── MyCommunities.tsx            # Lista de mis comunidades
-│   │   │   │   └── NotCommunities.tsx           # Estado vacío
+│   │   │   │   ├── CommunityActionsPanel.tsx       # Panel de acciones (editar/unirse)
+│   │   │   │   ├── CommunityCard.tsx               # Tarjeta de comunidad
+│   │   │   │   ├── CommunityForm.tsx               # Formulario CRUD con imagen
+│   │   │   │   ├── CommunityMembership.tsx         # Gestión de membresía
+│   │   │   │   ├── CommunityWithConnectsCard.tsx   # Tarjeta de connect en comunidad
+│   │   │   │   ├── CreateCoreCommunity.tsx         # Crear comunidad
+│   │   │   │   ├── DeleteCommunityForm.tsx         # Eliminar comunidad
+│   │   │   │   ├── DeleteCommunityModal.tsx        # Modal de confirmación
+│   │   │   │   ├── EditCoreCommunity.tsx           # Editar comunidad
+│   │   │   │   ├── MyCommunities.tsx               # Lista de mis comunidades
+│   │   │   │   ├── NotCommunities.tsx              # Estado vacío
+│   │   │   │   └── UpcomingCommunityConnects.tsx   # Próximos connects de la comunidad
 │   │   │   ├── policies/
-│   │   │   │   └── communityPolicies.ts         # Políticas de acceso
+│   │   │   │   └── communityPolicies.ts            # Políticas de acceso
 │   │   │   ├── schemas/
-│   │   │   │   └── communitySchema.ts           # Validación con Zod
+│   │   │   │   └── communitySchema.ts              # Validación con Zod
 │   │   │   ├── services/
-│   │   │   │   ├── CommunityRepository.ts       # Capa de datos
-│   │   │   │   ├── CommunityService.ts          # Lógica de negocio
-│   │   │   │   ├── MembershipRepository.ts      # Datos de miembros
-│   │   │   │   └── MembershipService.ts         # Lógica de miembros
+│   │   │   │   ├── CommunityRepository.ts
+│   │   │   │   ├── CommunityService.ts
+│   │   │   │   ├── MembershipRepository.ts
+│   │   │   │   └── MembershipService.ts
 │   │   │   ├── stores/
-│   │   │   │   └── communityStore.ts            # Estado global con Zustand
+│   │   │   │   └── communityStore.ts               # Estado global con Zustand
 │   │   │   ├── types/
-│   │   │   │   └── index.ts                     # Tipos de comunidades
+│   │   │   │   └── community.types.ts
 │   │   │   └── index.ts
 │   │   ├── connects/            # Feature de eventos (CoreConnect)
 │   │   │   ├── actions/
-│   │   │   │   └── connect-action.ts    # Server Actions para eventos
+│   │   │   │   ├── attendance-action.ts   # Server Action para asistencia
+│   │   │   │   └── connect-action.ts      # Server Actions CRUD de eventos
 │   │   │   ├── components/
-│   │   │   │   ├── ConnectForm.tsx      # Formulario de evento con toggle virtual/presencial
-│   │   │   │   ├── CreateConnect.tsx    # Crear evento con React Hook Form
-│   │   │   │   ├── LocationPicker.tsx   # Selector de ubicación con mapa interactivo
+│   │   │   │   ├── AttendanceToggleButton.tsx    # Confirmar/cancelar asistencia
+│   │   │   │   ├── ConnectCard.tsx               # Tarjeta de evento con acciones
+│   │   │   │   ├── ConnectForm.tsx               # Formulario de evento
+│   │   │   │   ├── ConnectLocation.tsx           # Muestra ubicación del evento
+│   │   │   │   ├── CreateConnect.tsx             # Crear evento
+│   │   │   │   ├── DeleteConnectForm.tsx         # Eliminar evento
+│   │   │   │   ├── DeleteConnectModal.tsx        # Modal de confirmación
+│   │   │   │   ├── DynamicConnectLocation.tsx    # Carga dinámica de ubicación
+│   │   │   │   ├── EditConnect.tsx               # Editar evento
+│   │   │   │   ├── LocationPicker.tsx            # Selector de ubicación con mapa
+│   │   │   │   ├── MyConnects.tsx                # Lista de mis eventos
+│   │   │   │   ├── NotConnects.tsx               # Estado vacío de eventos
+│   │   │   │   ├── OrganizerCard.tsx             # Tarjeta del organizador
 │   │   │   │   └── index.ts
+│   │   │   ├── policies/
+│   │   │   │   ├── ConnectAttendeesPolicy.ts     # Política de asistencia
+│   │   │   │   └── ConnectPolicy.ts              # Política general de eventos
 │   │   │   ├── schemas/
-│   │   │   │   └── connectSchema.ts     # Validación con Zod (discriminated union)
+│   │   │   │   └── connectSchema.ts              # Validación (discriminated union)
 │   │   │   ├── services/
-│   │   │   │   ├── CategoryRepository.ts   # Capa de datos de categorías
-│   │   │   │   ├── CategoryService.ts      # Lógica de negocio de categorías
-│   │   │   │   ├── ConnectRepository.ts    # Capa de datos de eventos
-│   │   │   │   └── ConnectService.ts       # Lógica de negocio de eventos
+│   │   │   │   ├── CategoryRepository.ts
+│   │   │   │   ├── CategoryService.ts
+│   │   │   │   ├── ConnectAttendeesRepository.ts  # Capa de datos de asistentes
+│   │   │   │   ├── ConnectAttendeesService.ts     # Lógica de asistencia
+│   │   │   │   ├── ConnectRepository.ts
+│   │   │   │   └── ConnectSevice.ts
+│   │   │   ├── stores/
+│   │   │   │   └── connect.store.ts              # Estado global de connects
 │   │   │   └── types/
-│   │   │       └── connect.types.ts     # Tipos inferidos de Drizzle
+│   │   │       ├── connect.types.ts
+│   │   │       └── index.ts
 │   │   └── notifications/       # Feature de notificaciones
 │   │       ├── components/
-│   │       │   ├── NotificationList.tsx  # Lista de notificaciones
+│   │       │   ├── NotificationList.tsx
 │   │       │   └── index.ts
 │   │       ├── services/
-│   │       │   ├── NotificationRepository.ts  # Capa de datos
-│   │       │   ├── NotificationService.ts     # Lógica de negocio
+│   │       │   ├── NotificationRepository.ts
+│   │       │   ├── NotificationService.ts
 │   │       │   └── index.ts
 │   │       └── types/
-│   │           └── index.ts     # Tipos de notificaciones
+│   │           └── index.ts
 │   ├── lib/
-│   │   └── auth.ts              # Configuración de Better Auth
+│   │   ├── auth.ts              # Configuración de Better Auth
+│   │   ├── auth-client.ts       # Cliente de autenticación
+│   │   ├── auth-server.ts       # Helpers de auth para servidor
+│   │   ├── limiter.ts           # Rate limiting con Upstash Redis
+│   │   ├── nodemailer.ts        # Configuración de Nodemailer
+│   │   └── pusher.ts            # Configuración de Pusher
 │   └── shared/
 │       ├── components/
-│       │   ├── dashboard/       # Componentes del dashboard
+│       │   ├── dashboard/
 │       │   │   ├── DashboardNavigation.tsx
 │       │   │   ├── DashboardPanel.tsx
 │       │   │   ├── MobileSidebar.tsx
 │       │   │   ├── NotificationsPanel.tsx
 │       │   │   ├── UserMenu.tsx
 │       │   │   └── index.ts
-│       │   ├── forms/           # Componentes de formularios
+│       │   ├── forms/
 │       │   │   ├── Form.tsx
 │       │   │   ├── FormInput.tsx
 │       │   │   ├── FormLabel.tsx
 │       │   │   ├── FormError.tsx
 │       │   │   ├── FormSubmit.tsx
 │       │   │   └── index.ts
-│       │   ├── typography/      # Componentes de tipografía
+│       │   ├── typography/
 │       │   │   ├── Heading.tsx
 │       │   │   └── index.ts
-│       │   └── ui/              # Componentes de interfaz
+│       │   └── ui/
 │       │       ├── GuestNavigation.tsx
 │       │       ├── Header.tsx
 │       │       ├── Hero.tsx
 │       │       ├── Logo.tsx
 │       │       └── index.ts
-│       └── utils/               # Utilidades
-│           ├── metadata.ts      # Helpers de metadata
+│       └── utils/
+│           ├── date.ts          # Helpers de fechas
+│           ├── ip.ts            # Utilidad para obtener IP del cliente
+│           ├── metadata.ts      # Helpers de metadata de páginas
 │           └── index.ts
-├── drizzle/                      # Migraciones de base de datos
+├── drizzle/                      # Migraciones de base de datos (0000 - 0009)
 ├── public/
 │   ├── logo-core.png            # Logo de la aplicación
-│   └── Meetis/                   # Assets adicionales
+│   └── Connects/                # Assets de eventos
 ├── drizzle.config.ts            # Configuración de Drizzle
 ├── next.config.ts               # Configuración de Next.js
 ├── tsconfig.json                # Configuración de TypeScript
-├── tailwind.config.ts           # Configuración de Tailwind
 └── package.json
 ```
 
@@ -231,15 +294,16 @@ core-meet/
 
 ### UI Components
 
-- **Header**: Encabezado principal con logo y navegación
-- **Hero**: Sección destacada de página de inicio
+- **Header**: Encabezado principal con logo y navegación diferenciada (autenticado / invitado)
+- **Hero**: Sección destacada de página de inicio con CTA
 - **Logo**: Componente de imagen del logo
 - **GuestNavigation**: Navegación con botones de login/registro elegantes
+- **UserNavigation**: Navegación para usuarios autenticados con acceso al dashboard
 
 ### Form Components
 
 - **Form**: Contenedor de formularios con manejo de Server Actions
-- **FormInput**: Input reutilizable con estilos consistentes
+- **FormInput**: Input reutilizable con estilos consistentes y estados de error
 - **FormLabel**: Labels accesibles para formularios
 - **FormError**: Componente para mostrar errores de validación
 - **FormSubmit**: Botón de submit con estados de loading
@@ -253,68 +317,59 @@ core-meet/
 - **LoginForm**: Formulario de inicio de sesión con validación
 - **RegisterForm**: Formulario de registro de usuarios con validación
 - **ForgotPasswordForm**: Formulario de recuperación de contraseña
+- **SetPasswordForm**: Formulario para restablecer contraseña con token
 
 ### Dashboard Components
 
-- **DashboardNavigation**: Barra de navegación lateral del dashboard con diseño oscuro elegante
-- **DashboardPanel**: Panel contenedor principal del dashboard con top-bar personalizable
+- **DashboardNavigation**: Barra de navegación lateral con diseño oscuro elegante
+- **DashboardPanel**: Panel contenedor principal con top-bar y sidebar responsive
 - **MobileSidebar**: Navegación móvil responsive con diseño oscuro
-- **NotificationsPanel**: Panel de notificaciones con contador en tiempo real
+- **NotificationsPanel**: Badge de notificaciones con contador en tiempo real (Pusher)
 - **UserMenu**: Menú desplegable de usuario con opciones de perfil y cierre de sesión
 
 ### Notification Components
 
-- **NotificationList**: Lista de notificaciones con diseño moderno y animaciones
-  - Animaciones de entrada escalonadas
-  - Indicadores visuales de notificaciones no leídas
-  - Estado vacío elegante con iconos
-  - Formato de fecha localizado en español
-  - Diseño responsive y accesible
+- **NotificationList**: Lista de notificaciones con animaciones de entrada, indicadores de lectura y formato de fecha localizado
 
 ### Community Components
 
-- **CommunityCard**: Tarjeta de presentación de comunidad con imagen y descripción
-- **CommunityForm**: Formulario reutilizable para crear/editar comunidades
-  - Validación con Zod y React Hook Form
-  - Integración con UploadThing para imágenes
-  - Preview de imagen antes de subir
-  - Estados de carga y errores
+- **CommunityCard**: Tarjeta de comunidad con imagen, contador de miembros y acciones
+- **CommunityForm**: Formulario reutilizable para crear/editar con preview de imagen (UploadThing)
+- **CommunityWithConnectsCard**: Tarjeta compacta de un CoreConnect dentro de la página de comunidad
+- **UpcomingCommunityConnects**: Sección de próximos CoreConnects en la página pública de comunidad
 - **CreateCoreCommunity**: Página de creación de comunidades
 - **EditCoreCommunity**: Página de edición de comunidades
 - **MyCommunities**: Lista de comunidades propias del usuario
-- **CommunityActionsPanel**: Panel de acciones (editar, eliminar)
-- **CommunityMembership**: Gestión de miembros y usuarios de la comunidad
+- **CommunityActionsPanel**: Panel de acciones (editar, unirse/salir)
+- **CommunityMembership**: Gestión de membresía con botones de unirse y salir
 - **DeleteCommunityModal**: Modal de confirmación para eliminar comunidad
-- **DeleteCommunityForm**: Formulario para eliminación de comunidad
+- **DeleteCommunityForm**: Formulario de eliminación
 - **NotCommunities**: Estado vacío cuando no hay comunidades
 
-### Connect Components (Eventos)
+### Connect Components (Eventos CoreConnect)
 
-- **ConnectForm**: Formulario completo para crear eventos (CoreConnect)
-  - Toggle para seleccionar evento virtual o presencial
-  - Campos dinámicos según tipo de evento
-  - Validación con discriminated union de Zod
-  - Integración con UploadThing para imágenes
-  - Selector de fecha y hora
-  - Selector de comunidad y categoría
-  - Campo de cupos disponibles
+- **ConnectCard**: Tarjeta de evento con imagen, fecha, acciones y permisos contextuales
+- **ConnectForm**: Formulario completo con toggle virtual/presencial, validación dinámica
+- **ConnectLocation**: Muestra la ubicación del evento (nombre, dirección, mapa)
+- **DynamicConnectLocation**: Carga dinámica (SSR desactivado) del mapa de ubicación
 - **CreateConnect**: Página de creación de eventos con React Hook Form
-  - Gestión de estado del formulario
-  - Manejo de errores y validaciones
-  - Integración con Server Actions
-- **LocationPicker**: Selector de ubicación interactivo con mapa
-  - Integración con React Leaflet
-  - Búsqueda de ubicaciones con HERE Maps API
-  - Marcador arrastrable para precisión
-  - Autocompletado de direcciones
-  - Validación de coordenadas geográficas
-  - Solo para eventos presenciales
+- **EditConnect**: Página de edición de eventos con valores precargados
+- **DeleteConnectModal**: Modal de confirmación para eliminar evento
+- **DeleteConnectForm**: Formulario de eliminación de evento
+- **MyConnects**: Lista de eventos del usuario con acciones contextuales
+- **NotConnects**: Estado vacío cuando no hay eventos
+- **AttendanceToggleButton**: Botón para confirmar o cancelar asistencia en tiempo real
+- **OrganizerCard**: Tarjeta con avatar y nombre del organizador del evento
+- **LocationPicker**: Selector de ubicación con mapa interactivo (React Leaflet + HERE Maps)
 
 ## 🛣️ Rutas Implementadas
 
 | Ruta | Descripción | Estado |
 |------|-------------|--------|
-| `/` | Página de inicio | ✅ Implementado |
+| `/` | Página de inicio con Hero | ✅ Implementado |
+| `/communities/[id]` | Detalle público de comunidad (OpenGraph) | ✅ Implementado |
+| `/connects/[id]` | Detalle público de CoreConnect con asistencia | ✅ Implementado |
+| `/categories/[id]` | Detalle público de categoría | ✅ Implementado |
 | `/auth/login` | Inicio de sesión | ✅ Implementado |
 | `/auth/register` | Registro de usuario | ✅ Implementado |
 | `/auth/forgot-password` | Recuperación de contraseña | ✅ Implementado |
@@ -323,11 +378,11 @@ core-meet/
 | `/dashboard/notifications` | Lista de notificaciones | ✅ Implementado |
 | `/dashboard/communities` | Gestión de comunidades | ✅ Implementado |
 | `/dashboard/communities/create` | Crear nueva comunidad | ✅ Implementado |
-| `/dashboard/communities/joined` | Comunidades unidas | ✅ Implementado |
-| `/dashboard/communities/[id]` | Ver detalle de comunidad | ✅ Implementado |
+| `/dashboard/communities/joined` | Comunidades a las que se unió | ✅ Implementado |
 | `/dashboard/communities/[id]/edit` | Editar comunidad | ✅ Implementado |
-| `/dashboard/connects` | Gestión de eventos | ✅ Implementado |
-| `/dashboard/connects/create` | Crear nuevo evento (CoreConnect) | ✅ Implementado |
+| `/dashboard/connects` | Gestión de CoreConnects | ✅ Implementado |
+| `/dashboard/connects/create` | Crear nuevo CoreConnect | ✅ Implementado |
+| `/dashboard/connects/[id]/edit` | Editar CoreConnect | ✅ Implementado |
 | `/api/auth/[...all]` | API routes de Better Auth | ✅ Implementado |
 | `/api/user/notifications` | API de conteo de notificaciones | ✅ Implementado |
 | `/api/categories` | API de categorías de eventos | ✅ Implementado |
@@ -436,6 +491,10 @@ PUSHER_SECRET="tu-pusher-secret"
 
 # HERE Maps API (para LocationPicker y geocoding)
 NEXT_PUBLIC_HERE_API_KEY="tu-here-maps-api-key"
+
+# Upstash Redis (para rate limiting)
+UPSTASH_REDIS_REST_URL="https://tu-redis.upstash.io"
+UPSTASH_REDIS_REST_TOKEN="tu-upstash-token"
 ```
 
 ### Ejecutar Migraciones
@@ -507,6 +566,11 @@ El proyecto utiliza Drizzle ORM con PostgreSQL. Las principales tablas son:
 - `lat` (DOUBLE PRECISION): Latitud (coordenada geográfica)
 - `lng` (DOUBLE PRECISION): Longitud (coordenada geográfica)
 - **Foreign Key**: Cascade delete cuando se elimina el evento
+
+#### **ConnectAttendees** (Asistentes a Eventos)
+- `connectId` (UUID): ID del evento (FK - cascade delete)
+- `userId` (TEXT): ID del usuario asistente (FK - cascade delete)
+- **Primary Key**: Compuesta (connectId, userId)
 
 #### **Notifications**
 - `id` (UUID): Identificador único
@@ -1145,6 +1209,95 @@ export async function createConnectAction(input: ConnectInput) {
 }
 ```
 
+### 🎟️ Sistema de Asistencia (AttendanceToggleButton)
+
+Los usuarios pueden confirmar o cancelar su asistencia a cualquier CoreConnect activo:
+
+#### Arquitectura
+
+```
+ConnectAttendeesRepository  ← Acceso a DB (isAttending, insert, remove, count)
+ConnectAttendeesService     ← Lógica: toggleAttendance + dispara notificación
+ConnectAttendeesPolicy      ← Reglas: canConfirm / canCancel
+attendance-action.ts        ← Server Action que invoca el service
+AttendanceToggleButton.tsx  ← Botón cliente con estado optimista
+```
+
+#### Política de Acceso
+
+```typescript
+// ConnectAttendeesPolicy.ts
+canConfirm(connect, user):
+  - El evento no puede haber pasado ya
+  - El usuario no puede ser el organizador
+  - El usuario no puede estar ya apuntado
+
+canCancel(connect, user):
+  - El usuario tiene que estar apuntado actualmente
+```
+
+#### Componente
+
+```tsx
+// AttendanceToggleButton.tsx — estado optimista
+<AttendanceToggleButton
+  connectId={connect.id}
+  userId={user.id}
+  isAttending={isAttending}   // estado inicial desde el servidor
+  communityId={connect.communityId}
+/>
+```
+
+Cuando alguien confirma asistencia, se envía automáticamente una **notificación Pusher** al organizador del evento.
+
+---
+
+## 🔒 Rate Limiting
+
+La aplicación protege sus rutas sensibles con **Upstash Redis** y **`@upstash/ratelimit`**:
+
+### Configuración
+
+```typescript
+// src/lib/limiter.ts
+import { Redis } from "@upstash/redis";
+import { Ratelimit } from "@upstash/ratelimit";
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+});
+
+// Ventana deslizante: máximo 3 peticiones por 10 minutos por IP
+export const rateLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(3, "10 m"),
+});
+```
+
+### IP Helper
+
+```typescript
+// src/shared/utils/ip.ts — detecta IP real detrás de proxies/CDN
+export function getIp(request: Request): string {
+  const forwarded = request.headers.get("x-forwarded-for");
+  return forwarded ? forwarded.split(",")[0].trim() : "127.0.0.1";
+}
+```
+
+### Uso en Actions
+
+```typescript
+const ip = getIp(request);
+const { success } = await rateLimiter.limit(ip);
+
+if (!success) {
+  return { error: "Demasiadas solicitudes. Inténtalo en unos minutos.", success: "" };
+}
+```
+
+---
+
 ## 📤 Sistema de Uploads
 
 UploadThing está integrado para la gestión de archivos:
@@ -1183,19 +1336,27 @@ import { authClient } from "@/lib/auth-client"
 import { requireAuth } from "@/lib/auth-server"
 ```
 
-## 📝 Convenciones de Código
-
-- Componentes React en PascalCase
-- Uso de Server Components por defecto
-- Export named para componentes
-- Barrel exports en archivos `index.ts`
-- Metadata por página para SEO
-- Repository Pattern para acceso a datos
-- Server Actions para mutaciones
-- Validación con Zod en cliente y servidor
-- Tipos TypeScript estrictos
-
 ## 🎯 Mejoras Recientes
+
+### Vistas Públicas, Asistencia y CRUD Completo de CoreConnect (v1.5.0)
+- ✅ Página pública de detalle de CoreConnect (`/connects/[id]`) con OpenGraph metadata para compartir
+- ✅ Página pública de detalle de CoreCommunity (`/communities/[id]`) con OpenGraph y Twitter Cards
+- ✅ Sección "Próximos CoreConnects" en la página de comunidad (`UpcomingCommunityConnects`)
+- ✅ Tarjeta del organizador (`OrganizerCard`) visible en la página de detalle del evento
+- ✅ **Sistema de asistencia completo**: confirmar y cancelar asistencia con `AttendanceToggleButton`
+  - Notificación en tiempo real al organizador cuando alguien confirma asistencia
+  - Política de acceso: no puede confirmar el propio admin ni eventos pasados
+  - Conteo de asistentes visible en listados y detalle
+- ✅ `ConnectAttendeesRepository` y `ConnectAttendeesService` con patrón Repository
+- ✅ `ConnectAttendeePolicy` y `ConnectPolicy` para validación de permisos
+- ✅ **CRUD completo de CoreConnect**: editar (`EditConnect`) y eliminar (`DeleteConnectModal`)
+- ✅ `ConnectCard` con acciones contextuales según permisos del usuario
+- ✅ `MyConnects` y `NotConnects` para la vista de administración de eventos
+- ✅ `ConnectLocation` y `DynamicConnectLocation` para mostrar la ubicación en el detalle
+- ✅ **Rate Limiting** con Upstash Redis y `@upstash/ratelimit` (ventana deslizante 3 req/10 min)
+- ✅ Nueva tabla `connectAttendees` en la base de datos (migración 0009)
+- ✅ Utilidad `ip.ts` para obtener la IP real del cliente (proxy-aware)
+- ✅ **Seguridad en links**: `target="_blank"` + `rel="noopener noreferrer"` en todos los enlaces para prevenir tabnabbing
 
 ### Sistema de Eventos CoreConnect (v1.4.0)
 - ✅ Implementación completa del sistema de eventos (CoreConnect)
@@ -1258,20 +1419,6 @@ import { requireAuth } from "@/lib/auth-server"
 4. Push a la rama (`git push origin feature/AmazingFeature`)
 5. Abre un Pull Request
 
-## 📄 Licencia
-
-Este proyecto es privado y está en desarrollo activo.
-
-## 👥 Autores
-
-- **Equipo CoreMeet** - Desarrollo inicial
-
----
-
-**CoreMeet** - Conectando equipos, construyendo comunidades 🚀
-
-Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver el resultado.
-
 ## 🔧 Configuración
 
 ### TypeScript
@@ -1309,9 +1456,13 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver el 
   - [x] Ver listado de comunidades propias
   - [x] Ver comunidades a las que se unió
   - [x] Políticas de acceso y validación
-  - [x] Sistema de miembros
+  - [x] Sistema de miembros (unirse / salir)
+  - [x] Página pública de detalle de comunidad (OpenGraph + Twitter Cards)
+  - [x] Próximos CoreConnects en la página de comunidad
 - [x] **CoreConnect (Eventos)** - Sistema completo de eventos
   - [x] Crear eventos con validación de permisos
+  - [x] Editar eventos existentes
+  - [x] Eliminar eventos con modal de confirmación
   - [x] Eventos virtuales con campo `meetingUrl` opcional
   - [x] Eventos presenciales con ubicación geográfica
   - [x] LocationPicker con mapa interactivo (React Leaflet)
@@ -1321,6 +1472,11 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver el 
   - [x] Validación robusta con políticas de acceso
   - [x] Gestión de cupos disponibles
   - [x] Subida de imágenes para eventos
+  - [x] Página pública de detalle de evento (OpenGraph)
+  - [x] Tarjeta del organizador en la página de detalle
+  - [x] **Sistema de asistencia**: confirmar y cancelar con un click
+  - [x] Notificación al organizador al confirmar asistencia
+  - [x] Conteo de asistentes en tarjetas y detalle
 - [x] Gestión de uploads con UploadThing
   - [x] Subida de imágenes para comunidades y eventos
   - [x] Eliminación de imágenes antiguas
@@ -1330,22 +1486,21 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver el 
   - [x] Canales individualizados por usuario
   - [x] Actualización automática de UI
   - [x] Contador de notificaciones en tiempo real
+- [x] **Rate Limiting con Upstash Redis**
+  - [x] Ventana deslizante (3 peticiones / 10 minutos)
+  - [x] Protección contra abuso de peticiones
+- [x] **Seguridad en enlaces**: `target="_blank"` + `rel="noopener noreferrer"` en todos los links
 
 ### 🚧 Próximas Funcionalidades
 
-- [ ] Ver listado de todos los eventos
-- [ ] Filtrado y búsqueda de eventos por categoría
-- [ ] Sistema de inscripción a eventos
-- [ ] Gestión de asistentes a eventos
-- [ ] Editar y eliminar eventos
-- [ ] Ver eventos de comunidades unidas
-- [ ] Verificación de email automática
+- [ ] Búsqueda y filtrado de eventos por categoría o communidad
+- [ ] Ver asistentes de un evento
+- [ ] Marcar notificaciones como leídas
 - [ ] Sistema de perfiles de usuario completo
 - [ ] Sistema de roles y permisos en comunidades
-- [ ] Chat en tiempo real (escalando Pusher)
+- [ ] Chat en tiempo real entre miembros
+- [ ] Verificación de email automática al registrarse
 - [ ] Sistema de reuniones departamentales
-- [ ] Marcar notificaciones como leídas
-- [ ] Búsqueda y filtrado de comunidades
 
 ## 📝 Convenciones de Código
 

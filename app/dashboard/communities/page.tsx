@@ -22,6 +22,8 @@ export default function CommunitiesPage() {
                 <Link
                     href="/dashboard/communities/create"
                     className="mt-5 flex items-center justify-center gap-3 bg-azul-200 text-azul-800 hover:text-azul-50 hover:bg-azul-500 border border-azul-400 hover:border-azul-800 transition-all duration-200 shadow-lg hover:shadow-xl rounded-xl text-lg font-semibold py-4 px-8 group"
+                    target="_blank"
+                    rel="noopener noreferrer"
                 >
                     <PlusCircleIcon className="w-6 h-6 group-hover:scale-110 transition-transform duration-200" />
                     <span>Crear CoreCommunity</span>
@@ -29,6 +31,8 @@ export default function CommunitiesPage() {
                 <Link
                     href="/dashboard/communities/joined"
                     className="mt-5 flex items-center justify-center gap-3 bg-naranja-200 text-naranja-800 hover:text-naranja-50 hover:bg-naranja-500 border border-naranja-400 hover:border-naranja-800 transition-all duration-200 shadow-lg hover:shadow-xl rounded-xl text-lg font-semibold py-4 px-8 group"
+                    target="_blank"
+                    rel="noopener noreferrer"
                 >
                     <UsersIcon className="w-6 h-6 group-hover:scale-110 transition-transform duration-200" />
                     <span>CoreCommunities a las que te uniste</span>

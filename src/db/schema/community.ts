@@ -1,6 +1,7 @@
 import { pgTable, text, timestamp, uuid, varchar, primaryKey, foreignKey } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { users } from "./auth-schema";
+import { connect } from "./connects";
 
 export const community = pgTable('communities', {
     id: uuid('id').primaryKey().defaultRandom(),
@@ -28,8 +29,13 @@ export const communityMembers = pgTable('community_members', {
 }))
 
 // Relations
-export const communityRelations = relations(community, ({ many }) => ({
-    members: many(communityMembers)
+export const communityRelations = relations(community, ({ one, many }) => ({
+    members: many(communityMembers),
+    connects: many(connect),
+    createdBy: one(users, {
+        fields: [community.createdBy],
+        references: [users.id],
+    }),
 }))
 
 export const communityMembersRelations = relations(communityMembers, ({ one }) => ({

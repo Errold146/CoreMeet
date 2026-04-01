@@ -37,7 +37,7 @@ export default function CommunityNotFound() {
                                 CoreConnect o Categoría que buscas no existe o ha sido eliminada
                             </p>
                             <p className="text-mirage-600">
-                                Es posible que el enlace esté roto o que ya no tengas acceso a esta comunidad.
+                                Es posible que el enlace esté roto o que ya no tengas acceso a este CoreConnect.
                             </p>
                         </div>
 
@@ -55,6 +55,8 @@ export default function CommunityNotFound() {
                             <Link
                                 href="/dashboard/connects"
                                 className="group flex items-center justify-center gap-3 bg-linear-to-r from-azul-500 to-azul-600 hover:from-azul-600 hover:to-azul-700 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                                target="_blank"
+                                rel="noopener noreferrer"
                             >
                                 <UsersIcon className="w-5 h-5 group-hover:scale-110 transition-transform" />
                                 <span>Ver todas los CoreConnects</span>
@@ -63,6 +65,8 @@ export default function CommunityNotFound() {
                             <Link
                                 href="/dashboard"
                                 className="group flex items-center justify-center gap-3 bg-white hover:bg-mirage-50 text-mirage-700 font-semibold px-6 py-3 rounded-xl border-2 border-mirage-300 hover:border-mirage-400 shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+                                target="_blank"
+                                rel="noopener noreferrer"
                             >
                                 <HomeIcon className="w-5 h-5 group-hover:scale-110 transition-transform" />
                                 <span>Ir al Dashboard</span>

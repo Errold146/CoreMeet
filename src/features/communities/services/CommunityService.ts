@@ -1,18 +1,20 @@
 import { User } from "better-auth";
 
-import { checkPassword } from "@/src/shared/utils/auth";
 import { membershipService } from "./MembershipService";
+import { checkPassword } from "@/src/shared/utils/auth";
 import { CommunityInput } from "../schemas/communitySchema";
 import { CommunityPolicy } from "../policies/CommunityPolicy";
 import { MembershipPolicy } from "../policies/MembershipPolicy";
 import { deleteFileFromUploadThing } from "@/src/shared/utils/uploadthing-utils";
 import { communityRepository, ICommunityRepository } from "./CommunityRepository";
 import { IMembershipRepository, membershipRepository } from './MembershipRepository';
+import { connectRepository, IConnectRepository } from '../../connects/services/ConnectRepository';
 
 class CommunityService {
     constructor(
         private communityRepository: ICommunityRepository,
-        private membershipRepository: IMembershipRepository
+        private membershipRepository: IMembershipRepository,
+        private connectRepository: IConnectRepository
     ){}
 
     async createCoreCommunity(data: CommunityInput, userId: string) {
@@ -66,7 +68,7 @@ class CommunityService {
 
     async getCoreCommunityDetails(communityId: string, user?: User) {
 
-        const community = await this.getCoreCommunity(communityId)
+        const community = await this.communityRepository.findByIdWithAdmin(communityId)
         if ( !community ) {
             return null
         }
@@ -167,6 +169,10 @@ class CommunityService {
             success: 'CoreCommunity Eliminada Correctamente.'
         }
     }
+
+    async getUncomingConnectsByCommunityId(communityId: string) {
+        return await this.connectRepository.findUncomingByCommunity(communityId)
+    }
 }
 
-export const communityService = new CommunityService(communityRepository, membershipRepository)
+export const communityService = new CommunityService(communityRepository, membershipRepository, connectRepository)

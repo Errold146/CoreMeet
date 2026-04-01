@@ -43,6 +43,8 @@ export default function UserMenu() {
                         <a
                             href={`/p`}
                             className="group flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-mirage-300 transition-colors data-focus:bg-linear-to-r data-focus:from-mirage-800 data-focus:to-mirage-700 data-focus:text-white"
+                            target="_blank"
+                            rel="noopener noreferrer"
                         >
                             <UserCircleIcon className="size-5 text-mirage-400 group-data-focus:text-azul-400 transition-colors" />
                             Ver tu Perfil
@@ -52,6 +54,8 @@ export default function UserMenu() {
                         <a
                             href="/dashboard/profile"
                             className="group flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-mirage-300 transition-colors data-focus:bg-linear-to-r data-focus:from-mirage-800 data-focus:to-mirage-700 data-focus:text-white"
+                            target="_blank"
+                            rel="noopener noreferrer"
                         >
                             <Cog6ToothIcon className="size-5 text-mirage-400 group-data-focus:text-azul-400 transition-colors" />
                             Administra tu Perfil
@@ -61,6 +65,8 @@ export default function UserMenu() {
                         <a
                             href="/dashboard/security"
                             className="group flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-mirage-300 transition-colors data-focus:bg-linear-to-r data-focus:from-mirage-800 data-focus:to-mirage-700 data-focus:text-white"
+                            target="_blank"
+                            rel="noopener noreferrer"
                         >
                             <ShieldCheckIcon className="size-5 text-mirage-400 group-data-focus:text-azul-400 transition-colors" />
                             Seguridad

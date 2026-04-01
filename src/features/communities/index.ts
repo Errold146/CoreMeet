@@ -16,6 +16,7 @@ export { membershipRepository } from "./services/MembershipRepository";
 export { membershipService } from "./services/MembershipService";
 export { MyCommunities } from "./components/MyCommunities";
 export { NotCommunities } from "./components/NotCommunities";
+export { UpcomingCommunityConnects } from "./components/UpcomingCommunityConnects";
 export { useCoreCommunityStore } from "./stores/community.store";
 export * from "./actions/community-actions";
 export * from "./schemas/communitySchema";

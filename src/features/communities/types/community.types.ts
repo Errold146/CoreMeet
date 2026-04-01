@@ -5,6 +5,7 @@ import { community, communityMembers } from "@/src/db/schema";
 
 export type InserCoreCommunity = InferInsertModel<typeof community>
 export type SelectCoreCommunity = InferSelectModel<typeof community>
+export type SelectCoreCommunityWithAdmin = SelectCoreCommunity & { admin: User }
 
 export type InsertCommunityMember = InferInsertModel<typeof communityMembers>
 export type SelectCommunityMember = InferSelectModel<typeof communityMembers>

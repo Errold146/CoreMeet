@@ -4,7 +4,8 @@ import { Metadata } from "next";
 import { Heading } from "@/components/typography";
 import { generatePageTitle, pluralize } from "@/src/shared/utils";
 import { getServerSession } from "@/src/lib/auth-server";
-import { CommunityActionsPanel, communityService } from "@/src/features/communities";
+import { CommunityActionsPanel, communityService, UpcomingCommunityConnects } from "@/src/features/communities";
+import { OrganizerCard } from "@/src/features/connects/components";
 
 export async function generateMetadata(props: PageProps<"/communities/[id]">): Promise<Metadata> {
     const { id } = await props.params;
@@ -132,27 +133,8 @@ export default async function CoreCommunitiesPage( props: PageProps<"/communitie
                     </div>
 
                     {/* Panel de Administrador */}
-                    <div className="lg:col-span-1">
-                        <div className="relative z-20 bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-mirage-200 lg:sticky lg:top-8">
-                            {/* Cabecera del panel */}
-                            <div className="bg-linear-to-br from-mirage-500 to-mirage-700 px-6 py-4">
-                                <h3 className="text-xl font-bold text-white text-center">
-                                    Administrador
-                                </h3>
-                            </div>
-
-                            {/* Contenido del panel */}
-                            <div className="p-6 min-h-50 flex items-center justify-center">
-                                <div className="text-center space-y-3">
-                                    <div className="w-16 h-16 bg-linear-to-br from-mirage-100 to-mirage-200 rounded-full mx-auto flex items-center justify-center">
-                                        <div className="w-8 h-8 bg-mirage-400 rounded-full"></div>
-                                    </div>
-                                    <p className="text-mirage-500 text-sm">
-                                        Información del administrador
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                    <div className="lg:col-span-1 lg:sticky lg:top-8">
+                        <OrganizerCard organizer={community!.data.admin} />
                     </div>
                 </div>
 
@@ -171,15 +153,7 @@ export default async function CoreCommunitiesPage( props: PageProps<"/communitie
                         {/* Contenido de los eventos */}
                         <div className="p-8 min-h-75">
                             <div className="flex flex-col items-center justify-center h-full space-y-4">
-                                <div className="relative">
-                                    <div className="absolute inset-0 bg-linear-to-r from-azul-300 to-naranja-300 rounded-full blur-xl opacity-30"></div>
-                                    <div className="relative w-24 h-24 bg-linear-to-br from-azul-100 to-naranja-100 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
-                                        <div className="w-12 h-12 bg-linear-to-br from-azul-400 to-naranja-400 rounded-full"></div>
-                                    </div>
-                                </div>
-                                <p className="text-mirage-500 text-center">
-                                    Los próximos eventos aparecerán aquí
-                                </p>
+                                <UpcomingCommunityConnects communityId={id} />
                             </div>
                         </div>
 

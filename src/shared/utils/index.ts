@@ -2,8 +2,8 @@
 export * from './ui'
 export * from "./uploadthing";
 export { pluralize } from './string';
-export { formatCreatedDate } from './date';
 export { generatePageTitle } from "./metadata";
+export { formatCreatedDate, formatConnectDate, displayDate, getMinutesDiffFromNow } from './date';
 
 // uploadthing-utils NO se exporta aquí porque usa UTApi (solo servidor)
 // Importar directamente: import { deleteFileFromUploadThing } from '@/src/shared/utils/uploadthing-utils'

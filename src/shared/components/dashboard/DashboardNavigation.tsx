@@ -31,6 +31,8 @@ export default function DashboardNavigation() {
                                             : "text-mirage-300 hover:bg-linear-to-r hover:from-mirage-800/50 hover:to-mirage-700/50 hover:text-white",
                                         "group flex items-center gap-x-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-300 ease-out transform hover:scale-[1.02] hover:shadow-md",
                                     )}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                 >
                                     <item.icon
                                         aria-hidden="true"

@@ -10,15 +10,16 @@ export const metadata: Metadata = {
     description: "Crear una cuenta en CoreMeet y comienza a crear CoreCommunities y CoreConnects"
 };
 
-export default function RegisterPage() {
+export default async function RegisterPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
+    const { redirect } = await searchParams;
     return (
         <>
             <Heading>Crear Cuenta</Heading>
-            <RegisterForm />
+            <RegisterForm redirectTo={redirect} />
 
             <nav className="mt-20 flex justify-between">
-                <Link href={"/auth/login"} className="font-bold text-mirage-500 hover:text-mirage-600 hover:underline">Iniciar Sesión</Link>
-                <Link href={"/auth/forgot-password"} className="font-bold text-mirage-500 hover:text-mirage-600 hover:underline">Olvide mi Contraseña</Link>
+                <Link href={"/auth/login"} className="font-bold text-mirage-500 hover:text-mirage-600 hover:underline" target="_blank" rel="noopener noreferrer">Iniciar Sesión</Link>
+                <Link href={"/auth/forgot-password"} className="font-bold text-mirage-500 hover:text-mirage-600 hover:underline" target="_blank" rel="noopener noreferrer">Olvide mi Contraseña</Link>
             </nav>
         </>
     );

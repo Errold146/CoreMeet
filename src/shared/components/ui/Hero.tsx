@@ -7,6 +7,8 @@ export function Hero() {
                 <Link
                     className="bg-naranja-500 hover:bg-naranja-600 transition-colors duration-200 rounded-xl text-xl text-white py-3 px-10 mt-5 font-bold"
                     href="/auth/register"
+                    target="_blank"
+                    rel="noopener noreferrer"
                 >
                     Obtener una cuenta
                 </Link>

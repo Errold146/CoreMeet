@@ -20,14 +20,14 @@ export function CommunityMembership({ permissions, communityId }: Props) {
 
     const handleJoin = () => {
         startTransition(async () => {
-            const { error, success } = await joinCommunityAction(communityId)
+            const result = await joinCommunityAction(communityId)
 
-            if (error) {
-                toast.error(error)
+            if (result?.error) {
+                toast.error(result.error)
             }
 
-            if (success) {
-                toast.success(success)
+            if (result?.success) {
+                toast.success(result.success)
                 setCanJoin(false)
                 setCanLeave(true)
             }
@@ -36,14 +36,14 @@ export function CommunityMembership({ permissions, communityId }: Props) {
 
     const handleLeave = () => {
         startTransition(async () => {
-            const { error, success } = await leaveCommunityAction(communityId)
+            const result = await leaveCommunityAction(communityId)
 
-            if (error) {
-                toast.error(error)
+            if (result?.error) {
+                toast.error(result.error)
             }
 
-            if (success) {
-                toast.success(success)
+            if (result?.success) {
+                toast.success(result.success)
                 setCanJoin(true)
                 setCanLeave(false)
             }

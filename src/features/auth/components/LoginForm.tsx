@@ -9,7 +9,11 @@ import { SignInInput, SignInSchema } from '../schemas/authSchema';
 import { Form, FormError, FormInput, FormLabel, FormSubmit } from "@/components/forms";
 import { redirect } from "next/navigation";
 
-export function LoginForm() {
+interface LoginFormProps {
+    redirectTo?: string;
+}
+
+export function LoginForm({ redirectTo }: LoginFormProps) {
 
     const {register, handleSubmit, formState: { errors }} = useForm({
         resolver: zodResolver(SignInSchema),
@@ -25,7 +29,7 @@ export function LoginForm() {
 
         if ( success ) {
             toast.success(success)
-            redirect('/dashboard')
+            redirect(redirectTo ?? '/dashboard')
         }
     }
 

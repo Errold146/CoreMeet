@@ -4,11 +4,17 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { useRouter } from "next/navigation";
 import { signUpAction } from "../actions/auth-actions";
 import { SignUpInput, SignUpSchema } from "../schemas/authSchema";
 import { Form, FormError, FormInput, FormLabel, FormSubmit } from "@/components/forms";
 
-export function RegisterForm() {
+interface RegisterFormProps {
+    redirectTo?: string;
+}
+
+export function RegisterForm({ redirectTo }: RegisterFormProps) {
+    const router = useRouter();
 
     const { register, handleSubmit, formState: { errors }, reset } = useForm({
         resolver: zodResolver(SignUpSchema),
@@ -25,6 +31,7 @@ export function RegisterForm() {
         if (success) {
             toast.success(success)
             reset()
+            router.push(redirectTo ? `/auth/login?redirect=${encodeURIComponent(redirectTo)}` : '/auth/login')
         }
 
     }

@@ -34,7 +34,7 @@ export function CommunityCard({ community }: CommunityCardProps) {
                     </div>
                 )}
                 <div className="absolute top-12 right-4 bg-azul-500 text-azul-50 hover:bg-azul-700 transition-colors duration-200 cursor-pointer px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                    <Link href={`/dashboard/communities/${community.data.id}/members` as any}>
+                    <Link href={`/dashboard/communities/${community.data.id}/members` as any} target="_blank" rel="noopener noreferrer">
                         {community.membersCount} {' '} {pluralize('Miembro', community.membersCount)}
                     </Link>
                 </div>
