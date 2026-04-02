@@ -25,9 +25,7 @@ export function NotConnects() {
             <Link
                 href="/dashboard/connects/create"
                 className="flex items-center justify-center gap-3 bg-azul-200 text-azul-800 hover:text-azul-50 hover:bg-azul-500 border-2 border-azul-400 hover:border-azul-800 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105 rounded-xl text-lg font-semibold py-4 px-8 group"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
+                      >
                 <PlusCircleIcon className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
                 <span>Crear mi CoreConnect</span>
             </Link>

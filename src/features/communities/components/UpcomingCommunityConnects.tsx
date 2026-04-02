@@ -11,8 +11,8 @@ export async function UpcomingCommunityConnects({ communityId }: Props) {
     const connects = await communityService.getUncomingConnectsByCommunityId(communityId)
 
     return (
-        <section className="max-w-7xl mx-auto mt-10">
-            <div className="mt-10 grid grid-cols-1 lg:grid-cols-3 gap-5 p-5 lg:p-0">
+        <section className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 p-5 lg:p-0">
                 {connects.length ? connects.map(connect => (
                     <CommunityWithConnectsCard key={connect.id} connect={connect} />
                 )): (

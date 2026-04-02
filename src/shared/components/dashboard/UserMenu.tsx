@@ -1,13 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
+import { useState, useEffect } from "react";
+
 import { signOut } from "@/src/lib/auth-client";
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { UserCircleIcon, Cog6ToothIcon, ShieldCheckIcon, ArrowRightStartOnRectangleIcon } from "@heroicons/react/24/outline";
 
-export default function UserMenu() {
+type Props = {
+    userId: string
+}
+
+export default function UserMenu({userId}: Props) {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -40,37 +46,28 @@ export default function UserMenu() {
 
                 <div className="py-1">
                     <MenuItem>
-                        <a
-                            href={`/p`}
-                            className="group flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-mirage-300 transition-colors data-focus:bg-linear-to-r data-focus:from-mirage-800 data-focus:to-mirage-700 data-focus:text-white"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
+                        <Link
+                            href={`/profile/${userId}`}
+                            className="group flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-mirage-300 transition-colors data-focus:bg-linear-to-r data-focus:from-mirage-800 data-focus:to-mirage-700 data-focus:text-white">
                             <UserCircleIcon className="size-5 text-mirage-400 group-data-focus:text-azul-400 transition-colors" />
                             Ver tu Perfil
-                        </a>
+                        </Link>
                     </MenuItem>
                     <MenuItem>
-                        <a
+                        <Link
                             href="/dashboard/profile"
-                            className="group flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-mirage-300 transition-colors data-focus:bg-linear-to-r data-focus:from-mirage-800 data-focus:to-mirage-700 data-focus:text-white"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
+                            className="group flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-mirage-300 transition-colors data-focus:bg-linear-to-r data-focus:from-mirage-800 data-focus:to-mirage-700 data-focus:text-white">
                             <Cog6ToothIcon className="size-5 text-mirage-400 group-data-focus:text-azul-400 transition-colors" />
                             Administra tu Perfil
-                        </a>
+                        </Link>
                     </MenuItem>
                     <MenuItem>
-                        <a
-                            href="/dashboard/security"
-                            className="group flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-mirage-300 transition-colors data-focus:bg-linear-to-r data-focus:from-mirage-800 data-focus:to-mirage-700 data-focus:text-white"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
+                        <Link
+                            href={"/dashboard/security" as any}
+                            className="group flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-mirage-300 transition-colors data-focus:bg-linear-to-r data-focus:from-mirage-800 data-focus:to-mirage-700 data-focus:text-white">
                             <ShieldCheckIcon className="size-5 text-mirage-400 group-data-focus:text-azul-400 transition-colors" />
                             Seguridad
-                        </a>
+                        </Link>
                     </MenuItem>
                 </div>
 

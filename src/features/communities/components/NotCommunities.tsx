@@ -26,9 +26,7 @@ export function NotCommunities() {
                 <Link
                     href="/dashboard/communities/create"
                     className="flex-1 flex items-center justify-center gap-3 bg-azul-200 text-azul-800 hover:text-azul-50 hover:bg-azul-500 border-2 border-azul-400 hover:border-azul-800 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105 rounded-xl text-lg font-semibold py-4 px-8 group"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
+                                  >
                     <PlusCircleIcon className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
                     <span>Crear mi CoreCommunity</span>
                 </Link>
@@ -36,9 +34,7 @@ export function NotCommunities() {
                 <Link
                     href="/dashboard/communities/joined"
                     className="flex-1 flex items-center justify-center gap-3 bg-naranja-200 text-naranja-800 hover:text-naranja-50 hover:bg-naranja-500 border-2 border-naranja-400 hover:border-naranja-800 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105 rounded-xl text-lg font-semibold py-4 px-8 group"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
+                                  >
                     <UsersIcon className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
                     <span>Explorar Comunidades</span>
                 </Link>

@@ -1,6 +1,6 @@
 import { relations } from "drizzle-orm";
 import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
-import { community } from "./community";
+import { communityMembers } from "./community";
 import { connect } from "./connects";
 
 export const users = pgTable("users", {
@@ -9,6 +9,7 @@ export const users = pgTable("users", {
     email: text("email").notNull().unique(),
     emailVerified: boolean("email_verified").default(false).notNull(),
     image: text("image"),
+    bio: text('bio'),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
         .defaultNow()
@@ -78,7 +79,7 @@ export const verifications = pgTable(
 export const usersRelations = relations(users, ({ many }) => ({
     sessions: many(sessions),
     accounts: many(accounts),
-    communities: many(community),
+    communityMemberships: many(communityMembers),
     connects: many(connect),
 }));
 

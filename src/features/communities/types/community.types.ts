@@ -34,3 +34,8 @@ export type CommunityWithPermissions = {
     context: CommmunityContext
     permissions: CommunityPermissions
 }
+
+
+export type CommunityWithMembersCount = Omit<SelectCoreCommunity, 'createdBy' | 'createdAt'> & {
+    membersCount: string
+}

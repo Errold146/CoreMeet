@@ -170,19 +170,21 @@ core-meet/
 │   │   │   ├── actions/
 │   │   │   │   ├── community-actions.ts   # Server Actions para comunidades
 │   │   │   │   └── membership-action.ts   # Server Actions para miembros
-│   │   │   ├── components/
-│   │   │   │   ├── CommunityActionsPanel.tsx       # Panel de acciones (editar/unirse)
-│   │   │   │   ├── CommunityCard.tsx               # Tarjeta de comunidad
-│   │   │   │   ├── CommunityForm.tsx               # Formulario CRUD con imagen
-│   │   │   │   ├── CommunityMembership.tsx         # Gestión de membresía
-│   │   │   │   ├── CommunityWithConnectsCard.tsx   # Tarjeta de connect en comunidad
-│   │   │   │   ├── CreateCoreCommunity.tsx         # Crear comunidad
-│   │   │   │   ├── DeleteCommunityForm.tsx         # Eliminar comunidad
-│   │   │   │   ├── DeleteCommunityModal.tsx        # Modal de confirmación
-│   │   │   │   ├── EditCoreCommunity.tsx           # Editar comunidad
-│   │   │   │   ├── MyCommunities.tsx               # Lista de mis comunidades
-│   │   │   │   ├── NotCommunities.tsx              # Estado vacío
-│   │   │   │   └── UpcomingCommunityConnects.tsx   # Próximos connects de la comunidad
+│   │   │   └── components/
+│   │   │       ├── CommunityActionsPanel.tsx       # Panel de acciones (editar/unirse)
+│   │   │       ├── CommunityCard.tsx               # Tarjeta de comunidad
+│   │   │       ├── CommunityForm.tsx               # Formulario CRUD con imagen
+│   │   │       ├── CommunityMembership.tsx         # Gestión de membresía
+│   │   │       ├── CommunityWithConnectsCard.tsx   # Tarjeta de connect en comunidad
+│   │   │       ├── CreateCoreCommunity.tsx         # Crear comunidad
+│   │   │       ├── DeleteCommunityForm.tsx         # Eliminar comunidad
+│   │   │       ├── DeleteCommunityModal.tsx        # Modal de confirmación
+│   │   │       ├── EditCoreCommunity.tsx           # Editar comunidad
+│   │   │       ├── FeatureCommunities.tsx          # Sección destacada pública
+│   │   │       ├── MyCommunities.tsx               # Lista de mis comunidades
+│   │   │       ├── NotCommunities.tsx              # Estado vacío
+│   │   │       ├── PublicCommunityCard.tsx         # Tarjeta pública de comunidad
+│   │   │       └── UpcomingCommunityConnects.tsx   # Próximos connects de la comunidad
 │   │   │   ├── policies/
 │   │   │   │   └── communityPolicies.ts            # Políticas de acceso
 │   │   │   ├── schemas/
@@ -203,6 +205,8 @@ core-meet/
 │   │   │   │   └── connect-action.ts      # Server Actions CRUD de eventos
 │   │   │   ├── components/
 │   │   │   │   ├── AttendanceToggleButton.tsx    # Confirmar/cancelar asistencia
+│   │   │   │   ├── CategoryCard.tsx              # Tarjeta de categoría con fallback gradiente
+│   │   │   │   ├── CategoryList.tsx              # Sección exploración por categoría
 │   │   │   │   ├── ConnectCard.tsx               # Tarjeta de evento con acciones
 │   │   │   │   ├── ConnectForm.tsx               # Formulario de evento
 │   │   │   │   ├── ConnectLocation.tsx           # Muestra ubicación del evento
@@ -215,6 +219,8 @@ core-meet/
 │   │   │   │   ├── MyConnects.tsx                # Lista de mis eventos
 │   │   │   │   ├── NotConnects.tsx               # Estado vacío de eventos
 │   │   │   │   ├── OrganizerCard.tsx             # Tarjeta del organizador
+│   │   │   │   ├── PublicConnectCard.tsx         # Tarjeta pública (sin permisos)
+│   │   │   │   ├── UncomingConnects.tsx          # Próximos CoreConnects (área pública)
 │   │   │   │   └── index.ts
 │   │   │   ├── policies/
 │   │   │   │   ├── ConnectAttendeesPolicy.ts     # Política de asistencia
@@ -270,18 +276,21 @@ core-meet/
 │       │   │   ├── Heading.tsx
 │       │   │   └── index.ts
 │       │   └── ui/
+│       │       ├── Footer.tsx
 │       │       ├── GuestNavigation.tsx
 │       │       ├── Header.tsx
 │       │       ├── Hero.tsx
 │       │       ├── Logo.tsx
+│       │       ├── Spinner.tsx
 │       │       └── index.ts
 │       └── utils/
 │           ├── date.ts          # Helpers de fechas
 │           ├── ip.ts            # Utilidad para obtener IP del cliente
 │           ├── metadata.ts      # Helpers de metadata de páginas
 │           └── index.ts
-├── drizzle/                      # Migraciones de base de datos (0000 - 0009)
+├── drizzle/                      # Migraciones de base de datos (0000 - 0010)
 ├── public/
+│   ├── categoria_01.jpg - categoria_12.jpg  # Imágenes de categorías
 │   ├── logo-core.png            # Logo de la aplicación
 │   └── Connects/                # Assets de eventos
 ├── drizzle.config.ts            # Configuración de Drizzle
@@ -295,9 +304,11 @@ core-meet/
 ### UI Components
 
 - **Header**: Encabezado principal con logo y navegación diferenciada (autenticado / invitado)
-- **Hero**: Sección destacada de página de inicio con CTA
+- **Footer**: Pie de página con logo, aviso de seguridad (sin tarjetas de crédito), atribución a MicroWeb-cr, derechos reservados y gradiente decorativo
+- **Hero**: Sección destacada de página de inicio con CTA (texto corregido sin `\n` literales)
 - **Logo**: Componente de imagen del logo
 - **GuestNavigation**: Navegación con botones de login/registro elegantes
+- **Spinner**: Indicador de carga
 - **UserNavigation**: Navegación para usuarios autenticados con acceso al dashboard
 
 ### Form Components
@@ -336,6 +347,8 @@ core-meet/
 - **CommunityCard**: Tarjeta de comunidad con imagen, contador de miembros y acciones
 - **CommunityForm**: Formulario reutilizable para crear/editar con preview de imagen (UploadThing)
 - **CommunityWithConnectsCard**: Tarjeta compacta de un CoreConnect dentro de la página de comunidad
+- **FeatureCommunities**: Sección pública de comunidades destacadas, ordenadas por número de miembros
+- **PublicCommunityCard**: Tarjeta pública de comunidad (imagen, miembros, descripción, link)
 - **UpcomingCommunityConnects**: Sección de próximos CoreConnects en la página pública de comunidad
 - **CreateCoreCommunity**: Página de creación de comunidades
 - **EditCoreCommunity**: Página de edición de comunidades
@@ -361,15 +374,19 @@ core-meet/
 - **AttendanceToggleButton**: Botón para confirmar o cancelar asistencia en tiempo real
 - **OrganizerCard**: Tarjeta con avatar y nombre del organizador del evento
 - **LocationPicker**: Selector de ubicación con mapa interactivo (React Leaflet + HERE Maps)
+- **PublicConnectCard**: Tarjeta pública de evento sin permisos (usa `SelectConnect` directamente)
+- **UncomingConnects**: Sección de próximos CoreConnects en la página principal (filtra por fecha Y hora)
+- **CategoryCard**: Tarjeta de categoría con imagen o fallback de gradiente rotativo por índice
+- **CategoryList**: Sección de exploración por categoría con grid responsivo (2→3→4→5 columnas)
 
 ## 🛣️ Rutas Implementadas
 
 | Ruta | Descripción | Estado |
 |------|-------------|--------|
-| `/` | Página de inicio con Hero | ✅ Implementado |
+| `/` | Página de inicio con Hero, próximos connects, comunidades destacadas y categorías | ✅ Implementado |
 | `/communities/[id]` | Detalle público de comunidad (OpenGraph) | ✅ Implementado |
 | `/connects/[id]` | Detalle público de CoreConnect con asistencia | ✅ Implementado |
-| `/categories/[id]` | Detalle público de categoría | ✅ Implementado |
+| `/categories/[id]` | Connects futuros filtrados por categoría con hero de imagen | ✅ Implementado |
 | `/auth/login` | Inicio de sesión | ✅ Implementado |
 | `/auth/register` | Registro de usuario | ✅ Implementado |
 | `/auth/forgot-password` | Recuperación de contraseña | ✅ Implementado |
@@ -1209,6 +1226,20 @@ export async function createConnectAction(input: ConnectInput) {
 }
 ```
 
+### Método `findUncomingByCategory`
+
+Filtrado de CoreConnects futuros por categoría con la misma lógica de fecha+hora que `findUncoming`:
+
+```typescript
+async findUncomingByCategory(categoryId: string): Promise<SelectConnect[]> {
+    // Incluye eventos cuya fecha > hoy
+    // O cuya fecha === hoy Y hora > ahora
+    // Ordenado por fecha y hora ascendente
+}
+```
+
+---
+
 ### 🎟️ Sistema de Asistencia (AttendanceToggleButton)
 
 Los usuarios pueden confirmar o cancelar su asistencia a cualquier CoreConnect activo:
@@ -1477,6 +1508,13 @@ import { requireAuth } from "@/lib/auth-server"
   - [x] **Sistema de asistencia**: confirmar y cancelar con un click
   - [x] Notificación al organizador al confirmar asistencia
   - [x] Conteo de asistentes en tarjetas y detalle
+- [x] **Área Pública completa** (parteOnce)
+  - [x] Footer con logo, aviso de seguridad y atribución a MicroWeb-cr
+  - [x] Sección "Próximos CoreConnects" filtrada por fecha y hora actual
+  - [x] Sección "CoreCommunities Destacadas" ordenadas por número de miembros
+  - [x] Sección "Explora por Categoría" con grid adaptativo e imágenes locales
+  - [x] Página de categoría con hero, connects filtrados y botón de regreso
+  - [x] Pool de conexiones robusto para Neon serverless
 - [x] Gestión de uploads con UploadThing
   - [x] Subida de imágenes para comunidades y eventos
   - [x] Eliminación de imágenes antiguas
@@ -1493,7 +1531,6 @@ import { requireAuth } from "@/lib/auth-server"
 
 ### 🚧 Próximas Funcionalidades
 
-- [ ] Búsqueda y filtrado de eventos por categoría o communidad
 - [ ] Ver asistentes de un evento
 - [ ] Marcar notificaciones como leídas
 - [ ] Sistema de perfiles de usuario completo

@@ -19,8 +19,7 @@ export function renderPasswordResetEmail(data: PasswordResetEmailData): string {
                     <div style="margin: 30px 0;">
                         <a
                             href="${resetUrl}"
-                            target="_blank"
-                            style="background-color: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;"
+                                                        style="background-color: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;"
                         >
                             Reestablecer Password
                         </a>

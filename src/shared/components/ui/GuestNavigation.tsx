@@ -6,15 +6,11 @@ export function GuestNavigation() {
             <Link
                 className="px-8 py-3 font-semibold text-naranja-600 bg-naranja-50 border-2 border-naranja-400 rounded-xl shadow-md hover:shadow-lg hover:bg-naranja-200 hover:text-naranja-700 transition-all duration-200 ease-in-out cursor-pointer"
                 href="/auth/login"
-                target="_blank"
-                rel="noopener noreferrer"
-            >Iniciar Sesión</Link>
+                      >Iniciar Sesión</Link>
             <Link
                 className="px-8 py-3 font-semibold text-naranja-600 bg-naranja-50 border-2 border-naranja-400 rounded-xl shadow-md hover:shadow-lg hover:bg-naranja-200 hover:text-naranja-700 transition-all duration-200 ease-in-out cursor-pointer"
                 href="/auth/register"
-                target="_blank"
-                rel="noopener noreferrer"
-            >Registrarse</Link>
+                      >Registrarse</Link>
         </nav>
     )
 }

@@ -8,12 +8,14 @@ import { InsertBasicConnect, InsertConnectLocation, InsertConnect, SelectConnect
 export interface IConnectRepository {
     insert(data: InsertConnect): Promise<void>
     findUncommingByUserId(userId: string): Promise<SelectConnect[]>
+    findUncoming(): Promise<SelectConnect[]>
     findById(connectId: string): Promise<SelectConnect | null>
     findFullById(connectId: string): Promise<FullConnect | null>
     update(connectId: string, data: Partial<InsertBasicConnect>): Promise<void>
     insertLocation(connectId: string, data: Omit<InsertConnectLocation, 'connectId' | 'id'>): Promise<void>
     deleteLocation(connectId: string): Promise<void>
     findUncomingByCommunity(communityId: string): Promise<SelectConnect[]>
+    findUncomingByCategory(categoryId: string): Promise<SelectConnect[]>
     delete(connectId: string): Promise<void>
 }
 
@@ -37,6 +39,25 @@ class ConnectRepository implements IConnectRepository {
                 gte(connect.date, today)
             ),
             orderBy: (connect, { asc }) => [asc(connect.date)]
+        })
+
+        return res
+    }
+
+    async findUncoming(): Promise<SelectConnect[]> {
+        const now = new Date()
+        const nowDate = format(now, 'yyyy-MM-dd')
+        const nowTime = format(now, 'HH:mm')
+
+        const res = await db.query.connect.findMany({
+            where: (connect, { or, gt, and, eq }) => or(
+                gt(connect.date, nowDate),
+                and(
+                    eq(connect.date, nowDate),
+                    gt(connect.time, nowTime)
+                )
+            ),
+            orderBy: (connect, { asc }) => [asc(connect.date), asc(connect.time)]
         })
 
         return res
@@ -106,6 +127,26 @@ class ConnectRepository implements IConnectRepository {
             ),
             orderBy: (connect, { asc }) => [asc(connect.date)],
             limit: 3
+        })
+    }
+
+    async findUncomingByCategory(categoryId: string): Promise<SelectConnect[]> {
+        const now = new Date()
+        const nowDate = format(now, 'yyyy-MM-dd')
+        const nowTime = format(now, 'HH:mm')
+
+        return db.query.connect.findMany({
+            where: (connect, { eq, and, or, gt }) => and(
+                eq(connect.categoryId, categoryId),
+                or(
+                    gt(connect.date, nowDate),
+                    and(
+                        eq(connect.date, nowDate),
+                        gt(connect.time, nowTime)
+                    )
+                )
+            ),
+            orderBy: (connect, { asc }) => [asc(connect.date), asc(connect.time)]
         })
     }
 

@@ -50,6 +50,14 @@ class ConnectService {
         return enriched
     }
 
+    async getUncoming() {
+        return await this.connectRepository.findUncoming()
+    }
+
+    async getUncomingByCategory(categoryId: string) {
+        return await this.connectRepository.findUncomingByCategory(categoryId)
+    }
+
     async getConnectById(connectId: string) {
         const connect = await this.connectRepository.findById(connectId)
         if ( !connect ) notFound();

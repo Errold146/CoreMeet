@@ -52,8 +52,7 @@ export function ConnectCard({ connect }: ConnectCardProps) {
                     <Link
                         href={`/connects/${data.id}`}
                         className="hover:underline underline-offset-2"
-                        target="_blank"
-                        rel="noopener noreferrer"
+
                     >
                         {data.title}
                     </Link>
@@ -73,8 +72,7 @@ export function ConnectCard({ connect }: ConnectCardProps) {
                     <Link
                         href={`/connects/${data.id}`}
                         className="w-full flex items-center justify-center gap-2 bg-azul-200 text-azul-800 hover:text-azul-50 hover:bg-azul-500 border border-azul-400 hover:border-azul-800 transition-all duration-200 shadow-md hover:shadow-lg rounded-lg text-sm font-semibold py-2 px-4 group/btn"
-                        target="_blank"
-                        rel="noopener noreferrer"
+
                     >
                         <ArrowRightCircleIcon className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
                         <span>Ver Detalles</span>
@@ -84,9 +82,7 @@ export function ConnectCard({ connect }: ConnectCardProps) {
                         <Link
                             href={`/dashboard/connects/${data.id}/attendees` as any}
                             className="w-full flex items-center justify-center gap-2 bg-mirage-200 text-mirage-800 hover:text-mirage-50 hover:bg-mirage-500 border border-mirage-400 hover:border-mirage-800 transition-all duration-200 shadow-md hover:shadow-lg rounded-lg text-sm font-semibold py-2 px-4 group/btn"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
+                                                          >
                             <UserGroupIcon className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
                             <span>Ver Asistentes</span>
                         </Link>
@@ -96,9 +92,7 @@ export function ConnectCard({ connect }: ConnectCardProps) {
                         <Link
                             href={`/dashboard/connects/${data.id}/edit` as any}
                             className="w-full flex items-center justify-center gap-2 bg-naranja-200 text-naranja-800 hover:text-naranja-50 hover:bg-naranja-500 border border-naranja-400 hover:border-naranja-800 transition-all duration-200 shadow-md hover:shadow-lg rounded-lg text-sm font-semibold py-2 px-4 group/btn"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
+                                                          >
                             <PencilSquareIcon className="w-5 h-5 group-hover/btn:rotate-12 transition-transform" />
                             <span>Editar</span>
                         </Link>

@@ -2,15 +2,21 @@ import Image from "next/image";
 import { Metadata } from "next";
 
 import { Heading } from "@/components/typography";
-import { generatePageTitle, pluralize } from "@/src/shared/utils";
 import { getServerSession } from "@/src/lib/auth-server";
-import { CommunityActionsPanel, communityService, UpcomingCommunityConnects } from "@/src/features/communities";
+import { generatePageTitle, pluralize } from "@/src/shared/utils";
 import { OrganizerCard } from "@/src/features/connects/components";
+import { CommunityActionsPanel, communityService, UpcomingCommunityConnects } from "@/src/features/communities";
+import { cache } from "react";
+
+const getCoreCommunityDetailsCache = cache(async (id: string) => {
+    const session = await getServerSession();
+    const community = await communityService.getCoreCommunityDetails(id, session?.user);
+    return community
+})
 
 export async function generateMetadata(props: PageProps<"/communities/[id]">): Promise<Metadata> {
     const { id } = await props.params;
-    const session = await getServerSession();
-    const community = await communityService.getCoreCommunityDetails(id, session?.user);
+    const community = await getCoreCommunityDetailsCache(id)
 
     if (!community) {
         return {
@@ -29,7 +35,7 @@ export async function generateMetadata(props: PageProps<"/communities/[id]">): P
             description: description || `Únete a ${name} en Core Meet`,
             images: [
                 {
-                    url: imageUrl,
+                    url: imageUrl ?? `${process.env.APP_URL}/default.jpg`,
                     width: 1200,
                     height: 630,
                     alt: name,
@@ -41,7 +47,7 @@ export async function generateMetadata(props: PageProps<"/communities/[id]">): P
             card: "summary_large_image",
             title: name,
             description: description || `Únete a ${name} en Core Meet`,
-            images: [imageUrl],
+            images: [imageUrl ?? `${process.env.APP_URL}/default.jpg`],
         },
     };
 }
@@ -49,8 +55,7 @@ export async function generateMetadata(props: PageProps<"/communities/[id]">): P
 export default async function CoreCommunitiesPage( props: PageProps<"/communities/[id]"> ) {
 
     const { id } = await props.params;
-    const session = await getServerSession();
-    const community = await communityService.getCoreCommunityDetails(id, session?.user);
+    const community = await getCoreCommunityDetailsCache(id)
 
     return (
         <>

@@ -2,6 +2,8 @@ import { Metadata } from "next";
 
 import { Hero } from "@/components/ui";
 import { generatePageTitle } from "@/src/shared/utils";
+import { FeatureCommunities } from "@/src/features/communities";
+import { CategoryList, UncomingConnects } from "@/src/features/connects/components";
 
 export const metadata: Metadata = {
     title: generatePageTitle("Inicio"),
@@ -14,6 +16,12 @@ export default async function Home() {
         <>
 
             <Hero />
+
+            <UncomingConnects />
+
+            <FeatureCommunities />
+
+            <CategoryList />
         </>
     );
 }

@@ -73,9 +73,7 @@ export default function ConnectDetailError({ error, reset }: ErrorProps) {
                             <Link
                                 href={"/connects" as any}
                                 className="group flex items-center justify-center gap-3 bg-linear-to-r from-azul-500 to-azul-600 hover:from-azul-600 hover:to-azul-700 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
+                                                                      >
                                 <ArrowLeftIcon className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                                 <span>Ver CoreConnects</span>
                             </Link>
@@ -92,9 +90,7 @@ export default function ConnectDetailError({ error, reset }: ErrorProps) {
                             <Link
                                 href="/"
                                 className="group flex items-center justify-center gap-3 bg-white hover:bg-mirage-50 text-mirage-700 font-semibold px-6 py-3 rounded-xl border-2 border-mirage-300 hover:border-mirage-400 shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
+                                                                      >
                                 <HomeIcon className="w-5 h-5 group-hover:scale-110 transition-transform" />
                                 <span>Ir al Inicio</span>
                             </Link>

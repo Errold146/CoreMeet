@@ -18,7 +18,7 @@ export async function generateMetadata({params}: PageProps<"/connects/[id]">): P
         description: connect.details,
         openGraph: {
             title: `Quedas cordialmente invitado (a) al CoreConnect: ${connect.title}`,
-            siteName: "CoreConnect",
+            siteName: "CoreMeet",
             images: [
                 {
                     url: connect.image,
@@ -99,18 +99,14 @@ export default async function ConnectPage(props: PageProps<"/connects/[id]">) {
                                 <Link
                                     href={`/categories/${connect.data.categoryId}`}
                                     className="inline-flex items-center gap-2 bg-mirage-100 hover:bg-mirage-400 text-mirage-600 hover:text-mirage-50 border border-mirage-300 text-sm font-semibold px-4 py-2 rounded-full transition-color duration-200"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
+                                                                                  >
                                     <TagIcon className="w-4 h-4" />
                                     {connect.data.category.name}
                                 </Link>
                                 <Link
                                     href={`/communities/${connect.data.communityId}`}
                                     className="inline-flex items-center gap-2 bg-mirage-100 hover:bg-mirage-400 text-mirage-600 hover:text-mirage-50 border border-mirage-300 text-sm font-semibold px-4 py-2 rounded-full transition-color duration-200"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
+                                                                                  >
                                     <UsersIcon className="w-4 h-4" />
                                     {connect.data.community.name}
                                 </Link>
@@ -124,17 +120,13 @@ export default async function ConnectPage(props: PageProps<"/connects/[id]">) {
                                             <Link
                                                 href={`/auth/login?redirect=${encodeURIComponent(`/connects/${id}`)}`}
                                                 className="inline-flex items-center gap-1.5 bg-azul-600 hover:bg-azul-700 text-white text-sm font-bold px-5 py-2 rounded-full transition-colors duration-200 shadow-md shadow-azul-200"
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                            >
+                                                                                                                      >
                                                 Iniciar Sesión
                                             </Link>
                                             <Link
                                                 href={`/auth/register?redirect=${encodeURIComponent(`/connects/${id}`)}`}
                                                 className="inline-flex items-center gap-1.5 bg-white hover:bg-naranja-50 text-naranja-600 hover:text-naranja-700 border border-naranja-300 text-sm font-bold px-5 py-2 rounded-full transition-colors duration-200 shadow-sm"
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                            >
+                                                                                                                      >
                                                 Crear Cuenta
                                             </Link>
                                         </div>
@@ -199,9 +191,7 @@ export default async function ConnectPage(props: PageProps<"/connects/[id]">) {
                                     <p className="text-center text-mirage-600 text-sm mb-3">Enlace de la reunión:</p>
                                     <a
                                         href={connect.data.meetingUrl ?? '#'}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="block text-center text-azul-600 hover:text-azul-800 hover:underline text-sm font-medium break-all"
+                                                                                                  className="block text-center text-azul-600 hover:text-azul-800 hover:underline text-sm font-medium break-all"
                                     >
                                         {connect.data.meetingUrl}
                                     </a>
@@ -220,9 +210,7 @@ export default async function ConnectPage(props: PageProps<"/connects/[id]">) {
                         )}
 
                         {/* Organizador */}
-                        {!connect.context.isAdmin && (
-                            <OrganizerCard organizer={connect.data.createdBy} />
-                        )}
+                        <OrganizerCard organizer={connect.data.createdBy} />
                     </aside>
                 </div>
             </main>

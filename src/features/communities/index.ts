@@ -10,6 +10,7 @@ export { CreateCoreCommunity } from "./components/CreateCoreCommunity";
 export { DeleteCommunityForm } from "./components/DeleteCommunityForm";
 export { DeleteCommunityModal } from "./components/DeleteCommunityModal";
 export { EditCoreCommunity } from "./components/EditCoreCommunity";
+export { FeatureCommunities } from "./components/FeatureCommunities";
 export { joinCommunityAction, leaveCommunityAction } from "./actions/membership-action";
 export { MembershipPolicy } from "./policies/MembershipPolicy";
 export { membershipRepository } from "./services/MembershipRepository";

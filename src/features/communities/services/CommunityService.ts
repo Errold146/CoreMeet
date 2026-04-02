@@ -8,13 +8,15 @@ import { MembershipPolicy } from "../policies/MembershipPolicy";
 import { deleteFileFromUploadThing } from "@/src/shared/utils/uploadthing-utils";
 import { communityRepository, ICommunityRepository } from "./CommunityRepository";
 import { IMembershipRepository, membershipRepository } from './MembershipRepository';
+import { IProfileRepository, profileRepository } from '../../profile/services/ProfileRepository';
 import { connectRepository, IConnectRepository } from '../../connects/services/ConnectRepository';
 
 class CommunityService {
     constructor(
         private communityRepository: ICommunityRepository,
         private membershipRepository: IMembershipRepository,
-        private connectRepository: IConnectRepository
+        private connectRepository: IConnectRepository,
+        private profileRepository: IProfileRepository
     ){}
 
     async createCoreCommunity(data: CommunityInput, userId: string) {
@@ -74,10 +76,14 @@ class CommunityService {
         }
 
         const membersCount = await this.membershipRepository.getMembersCount(community.id)
+        const admin = await this.profileRepository.findById(community.createdBy)
 
         if ( !user ) {
             return {
-                data: community,
+                data: {
+                    ...community,
+                    admin
+                },
                 membersCount,
                 context: null,
                 permissions: null
@@ -88,7 +94,10 @@ class CommunityService {
         const isAdmin = CommunityPolicy.isAdmin(user, community)
 
         return {
-            data: community,
+            data: {
+                ...community,
+                admin
+            },
             membersCount,
             context: {
                 isMember,
@@ -173,6 +182,10 @@ class CommunityService {
     async getUncomingConnectsByCommunityId(communityId: string) {
         return await this.connectRepository.findUncomingByCommunity(communityId)
     }
+
+    async getFeatureCommunities() {
+        return this.communityRepository.findFeature()
+    }
 }
 
-export const communityService = new CommunityService(communityRepository, membershipRepository, connectRepository)
+export const communityService = new CommunityService(communityRepository, membershipRepository, connectRepository, profileRepository)

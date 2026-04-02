@@ -5,14 +5,18 @@ import { useState } from "react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from "@headlessui/react";
 
-import { Logo } from "../ui";
+import { Logo, Spinner } from "../ui";
 import UserMenu from "./UserMenu";
 import MobileSidebar from "./MobileSidebar";
 import NotificationsPanel from "./NotificationsPanel";
 import DashboardNavigation from "./DashboardNavigation";
+import { useSession } from "@/src/lib/auth-client";
 
 export function DashboardPanel() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    const { data } = useSession()
+    if ( !data ) return <Spinner />
 
     return (
         <>
@@ -87,7 +91,7 @@ export function DashboardPanel() {
                 <div className="flex items-center gap-3 ml-auto pr-4 sm:pr-6">
                     <NotificationsPanel />
                     <div className="w-px h-6 bg-mirage-800"></div>
-                    <UserMenu />
+                    <UserMenu userId={data.user.id} />
                 </div>
             </div>
         </>

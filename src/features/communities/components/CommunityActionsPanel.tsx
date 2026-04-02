@@ -16,9 +16,7 @@ export function CommunityActionsPanel({ permissions, communityId }: Props) {
                 <Link
                     href={`/dashboard/communities/${communityId}/edit`}
                     className="w-full sm:w-fit flex items-center justify-center gap-2 bg-naranja-200 text-naranja-800 hover:text-naranja-50 hover:bg-naranja-500 border border-naranja-400 hover:border-naranja-800 transition-all duration-200 shadow-md hover:shadow-lg rounded-lg text-sm font-semibold py-2 px-10 group/btn"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
+                                  >
                     <PencilSquareIcon className="w-5 h-5 group-hover/btn:rotate-12 transition-transform" />
                     <span>Editar</span>
                 </Link>

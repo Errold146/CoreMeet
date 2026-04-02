@@ -4,9 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { PencilSquareIcon, TrashIcon, UsersIcon, ArrowRightCircleIcon } from "@heroicons/react/24/outline";
 
+import { pluralize } from "@/src/shared/utils";
 import { useCoreCommunityStore } from "../stores/community.store";
 import { CommunityWithPermissions } from "../types/community.types";
-import { pluralize } from "@/src/shared/utils";
 
 interface CommunityCardProps {
     community: CommunityWithPermissions
@@ -66,8 +66,7 @@ export function CommunityCard({ community }: CommunityCardProps) {
                 <div className="flex flex-col gap-2 mt-6">
                     <a
                         href={`/communities/${data.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
+
                         className="w-full flex items-center justify-center gap-2 bg-azul-200 text-azul-800 hover:text-azul-50 hover:bg-azul-500 border border-azul-400 hover:border-azul-800 transition-all duration-200 shadow-md hover:shadow-lg rounded-lg text-sm font-semibold py-2 px-4 group/btn"
                     >
                         <ArrowRightCircleIcon className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
@@ -77,9 +76,7 @@ export function CommunityCard({ community }: CommunityCardProps) {
                     {permissions.canViewMembers && (
                         <a
                             href={`/dashboard/communities/${data.id}/members`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full flex items-center justify-center gap-2 bg-mirage-200 text-mirage-800 hover:text-mirage-50 hover:bg-mirage-500 border border-mirage-400 hover:border-mirage-800 transition-all duration-200 shadow-md hover:shadow-lg rounded-lg text-sm font-semibold py-2 px-4 group/btn"
+                                                              className="w-full flex items-center justify-center gap-2 bg-mirage-200 text-mirage-800 hover:text-mirage-50 hover:bg-mirage-500 border border-mirage-400 hover:border-mirage-800 transition-all duration-200 shadow-md hover:shadow-lg rounded-lg text-sm font-semibold py-2 px-4 group/btn"
                         >
                             <UsersIcon className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
                             <span>Miembros</span>
@@ -89,9 +86,7 @@ export function CommunityCard({ community }: CommunityCardProps) {
                     {permissions.canEdit && (
                         <a
                             href={`/dashboard/communities/${data.id}/edit`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full flex items-center justify-center gap-2 bg-naranja-200 text-naranja-800 hover:text-naranja-50 hover:bg-naranja-500 border border-naranja-400 hover:border-naranja-800 transition-all duration-200 shadow-md hover:shadow-lg rounded-lg text-sm font-semibold py-2 px-4 group/btn"
+                                                              className="w-full flex items-center justify-center gap-2 bg-naranja-200 text-naranja-800 hover:text-naranja-50 hover:bg-naranja-500 border border-naranja-400 hover:border-naranja-800 transition-all duration-200 shadow-md hover:shadow-lg rounded-lg text-sm font-semibold py-2 px-4 group/btn"
                         >
                             <PencilSquareIcon className="w-5 h-5 group-hover/btn:rotate-12 transition-transform" />
                             <span>Editar</span>

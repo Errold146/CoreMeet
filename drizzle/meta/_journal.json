@@ -71,6 +71,13 @@
       "when": 1774889323688,
       "tag": "0009_easy_nightshade",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1775071162856,
+      "tag": "0010_hard_boom_boom",
+      "breakpoints": true
     }
   ]
 }

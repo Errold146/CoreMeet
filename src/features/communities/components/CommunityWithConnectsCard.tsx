@@ -37,8 +37,7 @@ export function CommunityWithConnectsCard({ connect }: Props) {
                     <Link
                         href={`/connects/${connect.id}`}
                         className="hover:underline underline-offset-2"
-                        target="_blank"
-                        rel="noopener noreferrer"
+
                     >
                         {connect.title}
                     </Link>
@@ -54,9 +53,7 @@ export function CommunityWithConnectsCard({ connect }: Props) {
                 <Link
                     href={`/connects/${connect.id}`}
                     className="w-full flex items-center justify-center gap-2 bg-azul-500 hover:bg-azul-600 text-white transition-all duration-200 shadow-md hover:shadow-lg rounded-xl text-sm font-bold py-2.5 px-4 group/btn"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
+                                  >
                     <span>Ver Detalles</span>
                     <ArrowRightCircleIcon className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
                 </Link>
