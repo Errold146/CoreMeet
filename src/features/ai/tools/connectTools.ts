@@ -43,4 +43,36 @@ export const connectTools = {
             }
         }
     }),
+    getConnectsByLocation: tool({
+        description: 'Busca CoreConnects (eventos) próximos que se realizan en una ciudad o país específico. Úsalo cuando el usuario mencione una ciudad (ej: "Bogotá", "Madrid", "Buenos Aires") o un país (ej: "Colombia", "España", "México").',
+        inputSchema: z.object({
+            location: z.string().describe('Ciudad o país mencionado por el usuario, tal como lo escribió')
+        }),
+        execute: async ({ location }) => {
+            const connects = await connectService.getConnectsByLocation(location)
+            return {
+                connects,
+                totalFound: connects.length,
+                searchedLocation: location
+            }
+        }
+    }),
+    getConnectsByDate: tool({
+        description: 'Busca CoreConnects (eventos) que ocurren en una fecha específica o dentro de un rango de fechas. Úsalo cuando el usuario mencione "hoy", "mañana", "esta semana", "el próximo lunes", una fecha concreta (ej: "20 de mayo de 2026") o un rango (ej: "entre el 1 y el 10 de junio"). IMPORTANTE: Convierte siempre las fechas relativas a formato YYYY-MM-DD usando la fecha actual que se te provee en el sistema antes de llamar esta herramienta.',
+        inputSchema: z.object({
+            startDate: z.string().describe('Fecha de inicio en formato YYYY-MM-DD'),
+            endDate: z.string().describe('Fecha de fin en formato YYYY-MM-DD. Si es un solo día, debe ser igual a startDate'),
+            label: z.string().optional().describe('Descripción legible del período buscado (ej: "hoy", "esta semana", "20 de mayo de 2026")')
+        }),
+        execute: async ({ startDate, endDate, label }) => {
+            const connects = await connectService.getConnectsByDateRange(startDate, endDate)
+            return {
+                connects,
+                totalFound: connects.length,
+                startDate,
+                endDate,
+                label: label ?? `${startDate} al ${endDate}`
+            }
+        }
+    }),
 };

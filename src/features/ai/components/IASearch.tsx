@@ -188,13 +188,19 @@ export function IASearch() {
                                         )
                                     }
 
-                                    if (toolName === 'getRecommendedConnects' || toolName === 'getUpcomingConnects' || toolName === 'getConnectsByCategory') {
-                                        const connectsOutput = output as { connects: Array<{ id: string; title: string; details: string; date: string; time: string; virtual: boolean; image: string; categoryName?: string; communityName?: string; organizerName?: string; organizerImage?: string | null }>; totalFound: number }
+                                    if (toolName === 'getRecommendedConnects' || toolName === 'getUpcomingConnects' || toolName === 'getConnectsByCategory' || toolName === 'getConnectsByLocation' || toolName === 'getConnectsByDate') {
+                                        const connectsOutput = output as { connects: Array<{ id: string; title: string; details: string; date: string; time: string; virtual: boolean; image: string; categoryName?: string; communityName?: string; organizerName?: string; organizerImage?: string | null; city?: string | null; country?: string | null }>; totalFound: number; label?: string }
                                         if (!connectsOutput?.connects?.length) {
-                                            return <p key={i} className="text-sm text-mirage-500 italic">No se encontraron eventos próximos.</p>
+                                            return <p key={i} className="text-sm text-mirage-500 italic">No se encontraron eventos{connectsOutput?.label ? ` para "${connectsOutput.label}"` : ' próximos'}.</p>
                                         }
                                         return (
                                             <div key={i} className="mt-3 space-y-3 w-full">
+                                                {connectsOutput.label && (
+                                                    <p className="text-xs text-mirage-400 flex items-center gap-1">
+                                                        <CalendarDaysIcon className="w-3.5 h-3.5" />
+                                                        Eventos para: <span className="font-semibold text-mirage-600">{connectsOutput.label}</span>
+                                                    </p>
+                                                )}
                                                 {connectsOutput.connects.map(c => (
                                                     <Link
                                                         key={c.id}
@@ -221,6 +227,12 @@ export function IASearch() {
                                                                     {c.virtual ? <VideoCameraIcon className="w-3 h-3" /> : <MapPinIcon className="w-3 h-3" />}
                                                                     {c.virtual ? 'Virtual' : 'Presencial'}
                                                                 </span>
+                                                                {!c.virtual && (c.city || c.country) && (
+                                                                    <span className="inline-flex items-center gap-1 text-xs text-mirage-500">
+                                                                        <MapPinIcon className="w-3 h-3 text-mirage-400" />
+                                                                        {[c.city, c.country].filter(Boolean).join(', ')}
+                                                                    </span>
+                                                                )}
                                                             </div>
                                                             {(c.categoryName || c.communityName) && (
                                                                 <div className="flex flex-wrap gap-1.5 mt-1.5">

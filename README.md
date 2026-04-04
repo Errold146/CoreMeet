@@ -599,7 +599,8 @@ IASearch.tsx (Client)
                               ├── streamText() con Vercel AI SDK
                               ├── Model: stepfun/step-3.5-flash via OpenRouter
                               └── tools: { getRecommendedConnects, getUpcomingConnects,
-                                           getConnectsByCategory, getRecommendedCommunities,
+                                           getConnectsByCategory, getConnectsByLocation,
+                                           getConnectsByDate, getRecommendedCommunities,
                                            getFeaturedCommunities, getCategories }
 ```
 
@@ -610,6 +611,8 @@ IASearch.tsx (Client)
 | `getRecommendedConnects` | Usuario busca eventos por tema | `connectService.searchByTopicEnriched(query)` |
 | `getUpcomingConnects` | "¿Qué eventos hay próximamente?" | `connectService.getUpcomingEnriched(limit)` |
 | `getConnectsByCategory` | Menciona una categoría explícita | `connectService.getConnectsByCategoryName(name)` |
+| `getConnectsByLocation` | Menciona una ciudad o país | `connectService.getConnectsByLocation(location)` — hace `ilike` en `city` y `country` de `connectLocations` |
+| `getConnectsByDate` | Menciona una fecha o período ("hoy", "20 de mayo", "esta semana") | `connectService.getConnectsByDateRange(startDate, endDate)` — el modelo resuelve fechas relativas con la fecha actual inyectada en el system prompt |
 | `getRecommendedCommunities` | Busca comunidades por tema | `communityService.searchCommunityByTopicEnriched(query)` |
 | `getFeaturedCommunities` | "Comunidades populares" | `communityService.getFeatureCommunities()` |
 | `getCategories` | "¿Qué categorías existen?" | `categoryService.getAllCategories()` |

@@ -230,6 +230,14 @@ class ConnectService {
     async getConnectsByCategoryName(categoryName: string) {
         return this.connectRepository.findByCategoryNameEnriched(categoryName)
     }
+
+    async getConnectsByLocation(location: string) {
+        return this.connectRepository.findByLocationEnriched(location)
+    }
+
+    async getConnectsByDateRange(startDate: string, endDate: string) {
+        return this.connectRepository.findByDateRangeEnriched(startDate, endDate)
+    }
 }
 
 export const connectService = new ConnectService(connectRepository, communityRepository, connectAttendeesRepository, notificationService)

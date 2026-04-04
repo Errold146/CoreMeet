@@ -1,4 +1,4 @@
-import { eq, or, ilike } from "drizzle-orm";
+import { eq, or, ilike, and, gte, lte, inArray } from "drizzle-orm";
 import { format } from "date-fns";
 
 import { db } from "@/src/db";
@@ -21,6 +21,8 @@ export interface IConnectRepository {
     searchEnriched(query: string): Promise<Array<SelectConnect & { categoryName: string; communityName: string; organizerName: string; organizerImage: string | null }>>
     findUpcomingEnriched(limit?: number): Promise<Array<SelectConnect & { categoryName: string; communityName: string; organizerName: string; organizerImage: string | null }>>
     findByCategoryNameEnriched(categoryName: string): Promise<Array<SelectConnect & { categoryName: string; communityName: string; organizerName: string; organizerImage: string | null }>>
+    findByLocationEnriched(location: string): Promise<Array<SelectConnect & { categoryName: string; communityName: string; organizerName: string; organizerImage: string | null; city: string | null; country: string | null }>>
+    findByDateRangeEnriched(startDate: string, endDate: string): Promise<Array<SelectConnect & { categoryName: string; communityName: string; organizerName: string; organizerImage: string | null; city: string | null; country: string | null }>>
 }
 
 class ConnectRepository implements IConnectRepository {
@@ -243,6 +245,62 @@ class ConnectRepository implements IConnectRepository {
             communityName: (community as { name: string }).name,
             organizerName: (createdBy as { name: string }).name,
             organizerImage: (createdBy as { image: string | null }).image ?? null,
+        }))
+    }
+
+    async findByLocationEnriched(location: string): Promise<Array<SelectConnect & { categoryName: string; communityName: string; organizerName: string; organizerImage: string | null; city: string | null; country: string | null }>> {
+        const today = format(new Date(), 'yyyy-MM-dd')
+
+        // Buscar los connectIds cuya ubicación coincida con la ciudad o país
+        const matchingLocations = await db.query.connectLocations.findMany({
+            where: (loc) => or(
+                ilike(loc.city, `%${location}%`),
+                ilike(loc.country, `%${location}%`)
+            )
+        })
+
+        if (matchingLocations.length === 0) return []
+
+        const connectIds = matchingLocations.map(l => l.connectId)
+
+        const results = await db.query.connect.findMany({
+            where: (c) => and(
+                gte(c.date, today),
+                inArray(c.id, connectIds)
+            ),
+            with: { category: true, community: true, createdBy: true, location: true },
+            orderBy: (c, { asc }) => [asc(c.date), asc(c.time)]
+        })
+
+        return results.map(({ category, community, createdBy, location: loc, ...c }) => ({
+            ...c,
+            categoryName: (category as { name: string }).name,
+            communityName: (community as { name: string }).name,
+            organizerName: (createdBy as { name: string }).name,
+            organizerImage: (createdBy as { image: string | null }).image ?? null,
+            city: loc?.city ?? null,
+            country: loc?.country ?? null,
+        }))
+    }
+
+    async findByDateRangeEnriched(startDate: string, endDate: string): Promise<Array<SelectConnect & { categoryName: string; communityName: string; organizerName: string; organizerImage: string | null; city: string | null; country: string | null }>> {
+        const results = await db.query.connect.findMany({
+            where: (c) => and(
+                gte(c.date, startDate),
+                lte(c.date, endDate)
+            ),
+            with: { category: true, community: true, createdBy: true, location: true },
+            orderBy: (c, { asc }) => [asc(c.date), asc(c.time)]
+        })
+
+        return results.map(({ category, community, createdBy, location: loc, ...c }) => ({
+            ...c,
+            categoryName: (category as { name: string }).name,
+            communityName: (community as { name: string }).name,
+            organizerName: (createdBy as { name: string }).name,
+            organizerImage: (createdBy as { image: string | null }).image ?? null,
+            city: loc?.city ?? null,
+            country: loc?.country ?? null,
         }))
     }
 }
