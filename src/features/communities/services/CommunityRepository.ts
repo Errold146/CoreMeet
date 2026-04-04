@@ -12,6 +12,8 @@ export interface ICommunityRepository {
     update(communityId: string, data: Partial<InserCoreCommunity>): Promise<SelectCoreCommunity | undefined>
     delete(communityId: string): Promise<void>
     findFeature(): Promise<CommunityWithMembersCount[]>
+    search(query: string): Promise<SelectCoreCommunity[]>
+    searchEnriched(query: string): Promise<Array<SelectCoreCommunity & { adminName: string; adminImage: string | null }>>
 }
 
 class CommunityRepository implements ICommunityRepository {
@@ -66,6 +68,31 @@ class CommunityRepository implements ICommunityRepository {
         }).from(community).orderBy(desc(membersCount))
 
         return res
+    }
+
+    async search(query: string): Promise<SelectCoreCommunity[]> {
+        return await db.query.community.findMany({
+            where: (community, { or, ilike }) => or(
+                ilike(community.name, `%${query}%`),
+                ilike(community.description, `%${query}%`)
+            )
+        })
+    }
+
+    async searchEnriched(query: string): Promise<Array<SelectCoreCommunity & { adminName: string; adminImage: string | null }>> {
+        const results = await db.query.community.findMany({
+            where: (community, { or, ilike }) => or(
+                ilike(community.name, `%${query}%`),
+                ilike(community.description, `%${query}%`)
+            ),
+            with: { createdBy: true }
+        })
+        return results.map(({ createdBy, ...c }) => ({
+            ...c,
+            createdBy: (createdBy as { id: string }).id,
+            adminName: (createdBy as { name: string }).name,
+            adminImage: (createdBy as { image: string | null }).image ?? null,
+        }))
     }
 }
 

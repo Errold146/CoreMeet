@@ -16,9 +16,12 @@ class ConnectAttendeesService {
         const connect = await this.connectRepository.findById(connectId)
         if ( !connect ) throw new Error('CoreConnect Inválido.');
 
-        const isAttending = await this.connectAttendeesRepository.isUserAttending(user.id, connectId)
+        const [isAttending, attendanceCount] = await Promise.all([
+            this.connectAttendeesRepository.isUserAttending(user.id, connectId),
+            this.connectAttendeesRepository.findAttendeesCount(connectId)
+        ])
 
-        if ( ConnectAttendeePolicy.canConfirm(user, connect, isAttending) ) {
+        if ( ConnectAttendeePolicy.canConfirm(user, connect, isAttending, attendanceCount) ) {
             await this.connectAttendeesRepository.insert(user.id, connect.id)
             await this.notificationService.createAndNotify({
                 userId: connect.createdBy,
@@ -27,13 +30,15 @@ class ConnectAttendeesService {
                 target: connect.title
             })
 
+            const remainingAfter = connect.availableSeats - (attendanceCount + 1)
             return {
                 success: `Asistencia confirmada al CoreConnect: ${connect.title}`,
                 error: '',
                 newPermissions: {
                     canConfirm: false,
                     canCancel: true
-                }
+                },
+                remainingSeats: remainingAfter
             }
         }
 
@@ -43,10 +48,21 @@ class ConnectAttendeesService {
                 success: `Asistencia Cancelada al CoreConnect: ${connect.title}`,
                 error: '',
                 newPermissions: {
-                    canConfirm: true,
+                    canConfirm: attendanceCount - 1 < connect.availableSeats,
                     canCancel: false
-                }
+                },
+                remainingSeats: connect.availableSeats - (attendanceCount - 1)
             }
+        }
+
+        return {
+            error: 'No hay cupos disponibles para este CoreConnect.',
+            success: '',
+            newPermissions: {
+                canConfirm: false,
+                canCancel: false
+            },
+            remainingSeats: 0
         }
     }
 }

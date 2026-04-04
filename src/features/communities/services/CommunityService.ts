@@ -186,6 +186,15 @@ class CommunityService {
     async getFeatureCommunities() {
         return this.communityRepository.findFeature()
     }
+
+    async searchCommunityByTopic(query: string) {
+        const communities = await this.communityRepository.search(query)
+        return communities
+    }
+
+    async searchCommunityByTopicEnriched(query: string) {
+        return this.communityRepository.searchEnriched(query)
+    }
 }
 
 export const communityService = new CommunityService(communityRepository, membershipRepository, connectRepository, profileRepository)

@@ -1,0 +1,1 @@
+export { IASearch } from "./IASearch";

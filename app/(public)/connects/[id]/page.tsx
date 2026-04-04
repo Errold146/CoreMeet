@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Metadata } from "next";
-import { CalendarIcon, ClockIcon, TagIcon, UsersIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
+import { CalendarIcon, ClockIcon, TagIcon, UsersIcon, VideoCameraIcon, TicketIcon } from "@heroicons/react/24/outline";
 
 import { requireAuth } from "@/src/lib/auth-server";
 import { Heading } from "@/src/shared/components/typography";
@@ -133,10 +133,19 @@ export default async function ConnectPage(props: PageProps<"/connects/[id]">) {
                                     </div>
                                 )}
                                 {connect.permissions && !connect.context.isAdmin && (
-                                    <AttendanceToggleButton
-                                        connectId={connect.data.id}
-                                        permissions={connect.permissions}
-                                    />
+                                    connect.permissions.canConfirm || connect.permissions.canCancel
+                                        ? <AttendanceToggleButton
+                                            connectId={connect.data.id}
+                                            permissions={connect.permissions}
+                                        />
+                                        : !connect.context.isAttending && (
+                                            <div className="w-full mt-1 p-4 rounded-2xl bg-red-50 border border-red-200 flex items-center gap-3">
+                                                <TicketIcon className="w-5 h-5 text-red-500 shrink-0" />
+                                                <p className="text-sm font-semibold text-red-700">
+                                                    Sin cupos disponibles para este CoreConnect.
+                                                </p>
+                                            </div>
+                                        )
                                 )}
                             </div>
 
@@ -173,6 +182,36 @@ export default async function ConnectPage(props: PageProps<"/connects/[id]">) {
                                         <p className="font-bold text-mirage-800">{connect.data.time} horas</p>
                                     </div>
                                 </div>
+
+                                {(() => {
+                                    const remaining = connect.data.availableSeats - connect.attendanceCount
+                                    const isFull = remaining <= 0
+                                    return (
+                                        <div className={`flex items-center gap-3 p-3 rounded-xl border ${
+                                            isFull
+                                                ? 'bg-red-50 border-red-100'
+                                                : remaining <= 5
+                                                    ? 'bg-naranja-50 border-naranja-200'
+                                                    : 'bg-emerald-50 border-emerald-100'
+                                        }`}>
+                                            <div className={`rounded-lg p-2 ${
+                                                isFull ? 'bg-red-100' : remaining <= 5 ? 'bg-naranja-100' : 'bg-emerald-100'
+                                            }`}>
+                                                <TicketIcon className={`w-5 h-5 ${
+                                                    isFull ? 'text-red-600' : remaining <= 5 ? 'text-naranja-600' : 'text-emerald-600'
+                                                }`} />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs text-mirage-500 font-medium">Cupos disponibles</p>
+                                                <p className={`font-bold ${
+                                                    isFull ? 'text-red-600' : remaining <= 5 ? 'text-naranja-600' : 'text-emerald-700'
+                                                }`}>
+                                                    {isFull ? 'Sin cupos' : `${remaining} de ${connect.data.availableSeats}`}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )
+                                })()}
                             </div>
 
                             <div className="h-1.5 bg-linear-to-r from-azul-400 via-naranja-400 to-azul-400" />

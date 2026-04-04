@@ -1,5 +1,5 @@
 import { User } from "better-auth";
-import { SelectCoreCommunity } from "../../communities";
+import { SelectCoreCommunity } from "../../communities/types/community.types";
 import { category, connect, connectLocations, connectAttendees } from "@/src/db/schema";
 
 export type SelectCategory = typeof category.$inferSelect

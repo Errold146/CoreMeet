@@ -4,7 +4,12 @@ import { rateLimit } from "@/src/lib/limiter";
 import { getClientIp } from "@/src/shared/utils/ip";
 import { authService } from "../services/AuthService";
 import { getMinutesDiffFromNow } from "@/src/shared/utils";
-import { ForgotPasswordInput, ForgotPasswordSchema, SetPasswordInput, SetPasswordSchema, SignInInput, SignInSchema, SignUpInput, SignUpSchema } from "../schemas/authSchema";
+import {
+    ChangePasswordInput,
+    ChangePasswordSchema,
+    ForgotPasswordInput, ForgotPasswordSchema, SetPasswordInput, SetPasswordSchema, SignInInput, SignInSchema, SignUpInput, SignUpSchema
+} from "../schemas/authSchema";
+import { requireAuth } from "@/src/lib/auth-server";
 
 async function checkRateLimit() {
     const ip = await getClientIp()
@@ -79,5 +84,41 @@ export async function setPasswordAction(input: SetPasswordInput, token: string) 
     }
 
     const res = await authService.confirmPassword(data.data, token)
+    return res
+}
+
+export async function changePasswordAction(input: ChangePasswordInput) {
+    const { session } = await requireAuth()
+    if ( !session ) {
+        return {
+            error: 'Acceso Denegado.',
+            success: '',
+            redirectToLogin: false
+        }
+    }
+
+    const data = ChangePasswordSchema.safeParse(input)
+    if ( !data.success ) {
+        return {
+            error: "Lo sentimos, ocurrio un error. Recarga e inteta de nuevo.",
+            success: '',
+            redirectToLogin: false
+        }
+    }
+
+    const res = await authService.changePassword(data.data)
+    return res ?? { error: '', success: '', redirectToLogin: false }
+}
+
+export async function revokeSessionAction(token: string) {
+    const { session } = await requireAuth()
+    if ( !session ) {
+        return {
+            error: 'Acceso Denegado.',
+            success: ''
+        }
+    }
+
+    const res = await authService.revokeSession(token)
     return res
 }

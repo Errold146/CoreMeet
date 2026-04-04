@@ -16,7 +16,7 @@ interface RegisterFormProps {
 export function RegisterForm({ redirectTo }: RegisterFormProps) {
     const router = useRouter();
 
-    const { register, handleSubmit, formState: { errors }, reset } = useForm({
+    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm({
         resolver: zodResolver(SignUpSchema),
         mode: 'all'
     })
@@ -80,7 +80,7 @@ export function RegisterForm({ redirectTo }: RegisterFormProps) {
             />
             {errors.passwordConfirmation && <FormError>{errors.passwordConfirmation.message}</FormError>}
 
-            <FormSubmit value={"Registrarme"} />
+            <FormSubmit value={isSubmitting ? "Creando la cuenta..." : "Registrarme"} disabled={isSubmitting} />
         </Form>
     )
 }

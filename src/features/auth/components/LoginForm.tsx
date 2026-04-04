@@ -8,6 +8,7 @@ import { signInAction } from "../actions/auth-actions";
 import { SignInInput, SignInSchema } from '../schemas/authSchema';
 import { Form, FormError, FormInput, FormLabel, FormSubmit } from "@/components/forms";
 import { redirect } from "next/navigation";
+import { useState } from "react";
 
 interface LoginFormProps {
     redirectTo?: string;
@@ -15,21 +16,26 @@ interface LoginFormProps {
 
 export function LoginForm({ redirectTo }: LoginFormProps) {
 
-    const {register, handleSubmit, formState: { errors }} = useForm({
+    const [locked, setLocked] = useState(false)
+
+    const {register, handleSubmit, formState: { errors, isSubmitting }} = useForm({
         resolver: zodResolver(SignInSchema),
         mode: 'all'
     })
 
     const onSubmit = async (data: SignInInput) => {
-        const { success, error } = await signInAction(data)
 
+        if ( locked ) return;
+        setLocked(true)
+
+        const { success, error } = await signInAction(data)
         if ( error ) {
             toast.error(error)
         }
 
         if ( success ) {
             toast.success(success)
-            redirect(redirectTo ?? '/dashboard')
+            redirect((redirectTo ?? '/dashboard') as any)
         }
     }
 
@@ -57,7 +63,7 @@ export function LoginForm({ redirectTo }: LoginFormProps) {
             />
             {errors.password && <FormError>{errors.password.message}</FormError>}
 
-            <FormSubmit value={"Iniciar Sesión"} />
+            <FormSubmit value={isSubmitting ? "Ingresando espere..." : "Iniciar Sesión"} disabled={isSubmitting || locked} />
         </Form>
     )
 }

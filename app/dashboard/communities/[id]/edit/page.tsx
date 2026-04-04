@@ -36,7 +36,7 @@ export default async function EditCommunityPage(props: PageProps<'/dashboard/com
     const { id } = await props.params
     const community = await communityService.getCoreCommunityDetails(id, session.user)
     if ( !community ) notFound();
-    if ( !community.permissions.canEdit ) redirect('/dashboard/communities');
+    if ( !community.permissions?.canEdit ) redirect('/dashboard/communities');
 
     return (
         <>

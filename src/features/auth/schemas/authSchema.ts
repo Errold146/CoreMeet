@@ -6,6 +6,7 @@ export const BaseAuthSchema = z.object({
     password: z.string().trim().min(8, { error: "La contraseña es mínimo de 8 caracteres."}),
     passwordConfirmation: z.string().trim().min(1, {error: "La confirmación de la contraseña es requerida."}),
     newPassword: z.string().trim().min(8, { error: "La contraseña es mínimo de 8 caracteres."}),
+    currentPassword: z.string().trim().min(1, { error: "El password actual es requerido."})
 })
 
 export const SignUpSchema = BaseAuthSchema.pick({
@@ -40,8 +41,20 @@ export const CheckPasswordSchema = z.object({
     password: z.string().min(1, {error: 'El Password es requerido.'})
 })
 
+export const ChangePasswordSchema = BaseAuthSchema.pick({
+    currentPassword: true,
+    newPassword: true,
+    passwordConfirmation: true
+}).extend({
+    revokeOtherSessions: z.boolean()
+}).refine(data => data.newPassword === data.passwordConfirmation, {
+    error: "Las contraseñas no son iguales.",
+    path: ['passwordConfirmation']
+})
+
 export type SignUpInput = z.infer<typeof SignUpSchema>
 export type SignInInput = z.infer<typeof SignInSchema>
 export type ForgotPasswordInput = z.infer<typeof ForgotPasswordSchema>
 export type SetPasswordInput = z.infer<typeof SetPasswordSchema>
 export type CheckPasswordInput = z.infer<typeof CheckPasswordSchema>
+export type ChangePasswordInput = z.infer<typeof ChangePasswordSchema>

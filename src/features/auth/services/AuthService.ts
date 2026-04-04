@@ -2,8 +2,9 @@ import { headers } from "next/headers";
 import { APIError } from "better-auth";
 
 import { auth } from "@/lib/auth";
+import { checkPassword } from "@/src/shared/utils/auth";
 import { authRepository, IAuthRepository } from "./AuthRepository";
-import { ForgotPasswordInput, SetPasswordInput, SignInInput, SignUpInput } from "../schemas/authSchema";
+import { ChangePasswordInput, ForgotPasswordInput, SetPasswordInput, SignInInput, SignUpInput } from "../schemas/authSchema";
 
 class AuthService {
 
@@ -141,6 +142,68 @@ class AuthService {
         return {
             error: '',
             success: ''
+        }
+    }
+
+    async changePassword(input: ChangePasswordInput) {
+        const { currentPassword, newPassword, revokeOtherSessions } = input
+
+        const isValidPassword = await checkPassword(currentPassword)
+        if ( !isValidPassword ) {
+            return {
+                error: 'La contraseña actual es incorrecta.',
+                success: ''
+            }
+        }
+
+        await auth.api.changePassword({
+            body: {
+                currentPassword,
+                newPassword,
+                revokeOtherSessions
+            },
+            headers: await headers()
+        })
+
+        if (revokeOtherSessions) {
+            await auth.api.signOut({
+                headers: await headers()
+            })
+            return {
+                error: '',
+                success: 'Contraseña actualizada. Sesión cerrada en todos los dispositivos.',
+                redirectToLogin: true
+            }
+        }
+
+        return {
+            error: '',
+            success: 'Contraseña Actualizada Correctamente.',
+            redirectToLogin: false
+        }
+    }
+
+    async getSessions() {
+        return auth.api.listSessions({
+            headers: await headers()
+        })
+    }
+
+    async getCurrentSession() {
+        return auth.api.getSession({
+            headers: await headers()
+        })
+    }
+
+    async revokeSession(token: string) {
+        await auth.api.revokeSession({
+            body: { token },
+            headers: await headers()
+        })
+
+        return {
+            error: '',
+            success: 'Sesión cerrada correctamente.'
         }
     }
 }

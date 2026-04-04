@@ -10,13 +10,15 @@ import { connectRepository, IConnectRepository } from "./ConnectRepository";
 import { deleteFileFromUploadThing } from "@/src/shared/utils/uploadthing-utils";
 import { connectAttendeesRepository, IConnectAttendeesRepository } from './ConnectAttendeesRepository';
 import { communityRepository, ICommunityRepository } from "../../communities/services/CommunityRepository";
+import { INotificationService, notificationService } from '../../notifications/services/NotificationService';
 
 class ConnectService {
 
     constructor(
         private connectRepository: IConnectRepository,
         private communityRepository: ICommunityRepository,
-        private connectAttendeesRepository: IConnectAttendeesRepository
+        private connectAttendeesRepository: IConnectAttendeesRepository,
+        private notificationService: INotificationService
     ){}
 
     async createConnect(data: ConnectInput, user: User) {
@@ -72,8 +74,10 @@ class ConnectService {
         const isPastConnect = ConnectPolicy.isPastConnect(connect)
 
         if ( !user ) {
+            const attendanceCount = await this.connectAttendeesRepository.findAttendeesCount(connect.id)
             return {
                 data: connect,
+                attendanceCount,
                 context: {
                     isAdmin: false,
                     isPastConnect,
@@ -83,18 +87,22 @@ class ConnectService {
             }
         }
 
-        const isAttending = await this.connectAttendeesRepository.isUserAttending(user.id, connect.id)
+        const [isAttending, attendanceCount] = await Promise.all([
+            this.connectAttendeesRepository.isUserAttending(user.id, connect.id),
+            this.connectAttendeesRepository.findAttendeesCount(connect.id)
+        ])
         const isAdmin = ConnectPolicy.isAdmin(user, connect)
 
         return {
             data: connect,
+            attendanceCount,
             context: {
                 isAdmin,
                 isPastConnect,
                 isAttending
             },
             permissions: {
-                canConfirm: ConnectAttendeePolicy.canConfirm(user, connect, isAttending),
+                canConfirm: ConnectAttendeePolicy.canConfirm(user, connect, isAttending, attendanceCount),
                 canCancel: ConnectAttendeePolicy.canCancel(user, connect, isAttending)
             }
         }
@@ -185,6 +193,20 @@ class ConnectService {
             // Si falla la eliminación de imagen, continuamos
         }
 
+        const attendees = await this.connectAttendeesRepository.findAttendeesByConnectId(connectId)
+        if (attendees.length > 0) {
+            await Promise.all(
+                attendees.map(attendee =>
+                    this.notificationService.createAndNotify({
+                        userId: attendee.userId,
+                        actorName: user.name,
+                        message: 'Ha cancelado el CoreConnect: ',
+                        target: connect.title
+                    })
+                )
+            )
+        }
+
         await this.connectRepository.delete(connectId)
 
         return {
@@ -192,6 +214,22 @@ class ConnectService {
             success: 'CoreConnect eliminado correctamente.'
         }
     }
+
+    async searchByTopic(query: string) {
+        return this.connectRepository.search(query)
+    }
+
+    async searchByTopicEnriched(query: string) {
+        return this.connectRepository.searchEnriched(query)
+    }
+
+    async getUpcomingEnriched(limit?: number) {
+        return this.connectRepository.findUpcomingEnriched(limit)
+    }
+
+    async getConnectsByCategoryName(categoryName: string) {
+        return this.connectRepository.findByCategoryNameEnriched(categoryName)
+    }
 }
 
-export const connectService = new ConnectService(connectRepository, communityRepository, connectAttendeesRepository)
+export const connectService = new ConnectService(connectRepository, communityRepository, connectAttendeesRepository, notificationService)

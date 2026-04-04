@@ -15,8 +15,8 @@ import { useSession } from "@/src/lib/auth-client";
 export function DashboardPanel() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
-    const { data } = useSession()
-    if ( !data ) return <Spinner />
+    const { data, isPending } = useSession()
+    if ( isPending || !data ) return <Spinner centered />
 
     return (
         <>

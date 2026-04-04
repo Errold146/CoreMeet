@@ -22,7 +22,8 @@ export function Footer() {
                         </p>
                         <p className="text-azul-400 text-xs">
                             Un producto de{" "}
-                            <span className="text-naranja-400 font-semibold">MicroWeb-cr</span>
+                            <span className="text-naranja-400 font-semibold">MicroWeb-cr</span>{' '} - {' '}
+                            Una marca de Errold Núñez Sánchez
                         </p>
                     </div>
 
@@ -64,7 +65,8 @@ export function Footer() {
                     </p>
                     <p>
                         Desarrollado por{" "}
-                        <span className="text-naranja-400 font-semibold">MicroWeb-cr</span>
+                        <span className="text-naranja-400 font-semibold">MicroWeb-cr</span>{' '} - {' '}
+                        Una marca de Errold Núñez Sánchez
                     </p>
                 </div>
             </div>

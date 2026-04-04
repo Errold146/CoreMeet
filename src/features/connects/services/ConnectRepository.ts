@@ -1,8 +1,8 @@
-import { eq } from "drizzle-orm";
+import { eq, or, ilike } from "drizzle-orm";
 import { format } from "date-fns";
 
 import { db } from "@/src/db";
-import { connect, connectLocations } from "@/src/db/schema";
+import { category, connect, connectLocations } from "@/src/db/schema";
 import { InsertBasicConnect, InsertConnectLocation, InsertConnect, SelectConnect, FullConnect } from "../types";
 
 export interface IConnectRepository {
@@ -17,6 +17,10 @@ export interface IConnectRepository {
     findUncomingByCommunity(communityId: string): Promise<SelectConnect[]>
     findUncomingByCategory(categoryId: string): Promise<SelectConnect[]>
     delete(connectId: string): Promise<void>
+    search(query: string): Promise<SelectConnect[]>
+    searchEnriched(query: string): Promise<Array<SelectConnect & { categoryName: string; communityName: string; organizerName: string; organizerImage: string | null }>>
+    findUpcomingEnriched(limit?: number): Promise<Array<SelectConnect & { categoryName: string; communityName: string; organizerName: string; organizerImage: string | null }>>
+    findByCategoryNameEnriched(categoryName: string): Promise<Array<SelectConnect & { categoryName: string; communityName: string; organizerName: string; organizerImage: string | null }>>
 }
 
 class ConnectRepository implements IConnectRepository {
@@ -152,6 +156,94 @@ class ConnectRepository implements IConnectRepository {
 
     async delete(connectId: string): Promise<void> {
         await db.delete(connect).where(eq(connect.id, connectId))
+    }
+
+    async search(query: string): Promise<SelectConnect[]> {
+        const today = format(new Date(), 'yyyy-MM-dd')
+        return db.query.connect.findMany({
+            where: (c, { and, gte }) => and(
+                gte(c.date, today),
+                or(
+                    ilike(c.title, `%${query}%`),
+                    ilike(c.details, `%${query}%`)
+                )
+            ),
+            orderBy: (c, { asc }) => [asc(c.date), asc(c.time)]
+        })
+    }
+
+    async searchEnriched(query: string): Promise<Array<SelectConnect & { categoryName: string; communityName: string; organizerName: string; organizerImage: string | null }>> {
+        const today = format(new Date(), 'yyyy-MM-dd')
+        const results = await db.query.connect.findMany({
+            where: (c, { and, gte }) => and(
+                gte(c.date, today),
+                or(
+                    ilike(c.title, `%${query}%`),
+                    ilike(c.details, `%${query}%`)
+                )
+            ),
+            with: { category: true, community: true, createdBy: true },
+            orderBy: (c, { asc }) => [asc(c.date), asc(c.time)]
+        })
+        return results.map(({ category, community, createdBy, ...c }) => ({
+            ...c,
+            categoryName: (category as { name: string }).name,
+            communityName: (community as { name: string }).name,
+            organizerName: (createdBy as { name: string }).name,
+            organizerImage: (createdBy as { image: string | null }).image ?? null,
+        }))
+    }
+
+    async findUpcomingEnriched(limit = 5): Promise<Array<SelectConnect & { categoryName: string; communityName: string; organizerName: string; organizerImage: string | null }>> {
+        const now = new Date()
+        const nowDate = format(now, 'yyyy-MM-dd')
+        const nowTime = format(now, 'HH:mm')
+        const results = await db.query.connect.findMany({
+            where: (c, { or, gt, and, eq }) => or(
+                gt(c.date, nowDate),
+                and(eq(c.date, nowDate), gt(c.time, nowTime))
+            ),
+            with: { category: true, community: true, createdBy: true },
+            orderBy: (c, { asc }) => [asc(c.date), asc(c.time)],
+            limit
+        })
+        return results.map(({ category, community, createdBy, ...c }) => ({
+            ...c,
+            categoryName: (category as { name: string }).name,
+            communityName: (community as { name: string }).name,
+            organizerName: (createdBy as { name: string }).name,
+            organizerImage: (createdBy as { image: string | null }).image ?? null,
+        }))
+    }
+
+    async findByCategoryNameEnriched(categoryName: string): Promise<Array<SelectConnect & { categoryName: string; communityName: string; organizerName: string; organizerImage: string | null }>> {
+        const today = format(new Date(), 'yyyy-MM-dd')
+
+        // Buscar categorías cuyo nombre coincida (case-insensitive)
+        const matchingCategories = await db.query.category.findMany({
+            where: (cat, { ilike }) => ilike(cat.name, `%${categoryName}%`)
+        })
+
+        if (matchingCategories.length === 0) return []
+
+        const categoryIds = matchingCategories.map(c => c.id)
+
+        const results = await db.query.connect.findMany({
+            where: (c, { and, gte, inArray }) => and(
+                gte(c.date, today),
+                inArray(c.categoryId, categoryIds)
+            ),
+            with: { category: true, community: true, createdBy: true },
+            orderBy: (c, { asc }) => [asc(c.date), asc(c.time)]
+        })
+
+        return results.map(({ category, community, createdBy, ...c }) => ({
+            ...c,
+            categoryName: (category as { name: string }).name,
+            communityName: (community as { name: string }).name,
+            organizerName: (createdBy as { name: string }).name,
+            organizerImage: (createdBy as { image: string | null }).image ?? null,
+        }))
     }
 }
 
