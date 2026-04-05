@@ -189,6 +189,7 @@ class ConnectRepository implements IConnectRepository {
         })
         return results.map(({ category, community, createdBy, ...c }) => ({
             ...c,
+            createdBy: (createdBy as { id: string }).id,
             categoryName: (category as { name: string }).name,
             communityName: (community as { name: string }).name,
             organizerName: (createdBy as { name: string }).name,
@@ -211,6 +212,7 @@ class ConnectRepository implements IConnectRepository {
         })
         return results.map(({ category, community, createdBy, ...c }) => ({
             ...c,
+            createdBy: (createdBy as { id: string }).id,
             categoryName: (category as { name: string }).name,
             communityName: (community as { name: string }).name,
             organizerName: (createdBy as { name: string }).name,
@@ -241,6 +243,7 @@ class ConnectRepository implements IConnectRepository {
 
         return results.map(({ category, community, createdBy, ...c }) => ({
             ...c,
+            createdBy: (createdBy as { id: string }).id,
             categoryName: (category as { name: string }).name,
             communityName: (community as { name: string }).name,
             organizerName: (createdBy as { name: string }).name,
@@ -274,6 +277,7 @@ class ConnectRepository implements IConnectRepository {
 
         return results.map(({ category, community, createdBy, location: loc, ...c }) => ({
             ...c,
+            createdBy: (createdBy as { id: string }).id,
             categoryName: (category as { name: string }).name,
             communityName: (community as { name: string }).name,
             organizerName: (createdBy as { name: string }).name,
@@ -295,6 +299,7 @@ class ConnectRepository implements IConnectRepository {
 
         return results.map(({ category, community, createdBy, location: loc, ...c }) => ({
             ...c,
+            createdBy: (createdBy as { id: string }).id,
             categoryName: (category as { name: string }).name,
             communityName: (community as { name: string }).name,
             organizerName: (createdBy as { name: string }).name,
