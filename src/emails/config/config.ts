@@ -1,8 +1,8 @@
 export const emailConfig = {
     from: {
-        verification: "CoreMeet <cuentas@coremeet.com>",
-        passwordReset: "CoreMeet <admin@coremeet.com>",
-        default: "CoreMeet <noreply@coremeet.com>",
+        verification: "CoreMeet <cuentas@core-meet.acesorarte.com>",
+        passwordReset: "CoreMeet <noreply@core-meet.acesorarte.com>",
+        default: "CoreMeet <noreply@core-meet.acesorarte.com>",
     },
     tokenExpiration: "1 hora",
 } as const;
