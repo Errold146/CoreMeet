@@ -32,7 +32,7 @@ Reglas para usar las herramientas:
 - Si el usuario menciona un evento o comunidad anterior y quiere más detalles, regístrarse, o cualquier acción sobre él, vuelve a llamar la herramienta apropiada con el mismo contexto de búsqueda para que los resultados se muestren visualmente.
 
 Siempre responde en español y sintetiza los resultados de las herramientas en lenguaje natural.`,
-        model: openRouter('stepfun/step-3.5-flash:free'),
+        model: openRouter('nvidia/nemotron-nano-9b-v2:free'),
         tools,
         stopWhen: stepCountIs(3),
     })
