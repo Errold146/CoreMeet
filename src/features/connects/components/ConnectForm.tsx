@@ -36,11 +36,11 @@ export function ConnectForm({ communities, categories }: Props) {
                     Detalles del CoreConnect
                 </legend>
 
-                <FormLabel htmlFor="title">Nombre del CoreConnect</FormLabel>
+                <FormLabel htmlFor="title">Nombre CoreMeet</FormLabel>
                 <FormInput
                     id="title"
                     type="text"
-                    placeholder="Titulo Meeti"
+                    placeholder="Nombre del CoreMeet"
                     error={!!errors.title}
                     {...register('title')}
                 />
