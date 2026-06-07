@@ -16,7 +16,8 @@ export function DashboardPanel() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const { data, isPending } = useSession()
-    if ( isPending || !data ) return <Spinner centered />
+    if ( isPending && !data ) return <Spinner centered />
+    if ( !data ) return <Spinner centered />
 
     return (
         <>

@@ -22,7 +22,7 @@ export function Footer() {
                         </p>
                         <p className="text-azul-400 text-xs">
                             Un producto de{" "}
-                            <span className="text-naranja-400 font-semibold">MicroWeb-cr</span>{' '} - {' '}
+                            <a href="https://www.microweb-cr.es" target="_blank" rel="noopener noreferrer" className="text-naranja-400 font-semibold hover:text-naranja-300 hover:underline transition-colors duration-200">MicroWeb-cr</a>{' '} - {' '}
                             Una marca de Errold Núñez Sánchez
                         </p>
                     </div>
@@ -51,7 +51,7 @@ export function Footer() {
                         </h3>
                         <p className="text-azul-200 text-sm leading-relaxed">
                             CoreMeet es una plataforma desarrollada y mantenida por{" "}
-                            <span className="text-naranja-400 font-semibold">MicroWeb-cr</span>,
+                            <a href="https://www.microweb-cr.es" target="_blank" rel="noopener noreferrer" className="text-naranja-400 font-semibold hover:text-naranja-300 hover:underline transition-colors duration-200">MicroWeb-cr</a>,
                             empresa costarricense dedicada al desarrollo de soluciones web modernas.
                         </p>
                     </div>
@@ -65,7 +65,7 @@ export function Footer() {
                     </p>
                     <p>
                         Desarrollado por{" "}
-                        <span className="text-naranja-400 font-semibold">MicroWeb-cr</span>{' '} - {' '}
+                        <a href="https://www.microweb-cr.es" target="_blank" rel="noopener noreferrer" className="text-naranja-400 font-semibold hover:text-naranja-300 hover:underline transition-colors duration-200">MicroWeb-cr</a>{' '} - {' '}
                         Una marca de Errold Núñez Sánchez
                     </p>
                 </div>
